@@ -233,26 +233,27 @@ var CONFIG = {
 };
 
 var SAMPLE = {
-  month:"червень", monthDays:30, monthStart:"2026-06-01",
-  plan:6060000, planByMgr:{"Еля":2500000,"Таня":1800000,"Саша":1350000,"Віка":410000},
+  month:"липень", monthDays:31, monthStart:"2026-07-01",
+  plan:7600000, planByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
   julyPlan:7600000, julyByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
+  prevMonthLabel:"червні", prevMonthTotal:8549901,
   managers:[
     {name:"Еля",role:"старший менеджер",color:"#7C5CE6"},
     {name:"Таня",role:"менеджер",color:"#B89CF0"},
     {name:"Саша",role:"менеджер",color:"#27C281"},
     {name:"Віка",role:"менеджер",color:"#F26B3A"}
   ],
-  bookingsByMgr:{"Еля":37,"Таня":25,"Саша":18,"Віка":6},
+  bookingsByMgr:{"Еля":0,"Таня":0,"Саша":0,"Віка":0},
   daily:{
-    "Еля":[390865,0,54453,207400,221623,0,60765,45740,0,417157,618868,0,0,0,291368,135339,129682,142000,0,0,106189,99540,92044,554718,0,0,0,0,122200,284340],
-    "Таня":[0,0,0,49441,174000,82705,82705,129230,129650,141270,104500,236800,38960,57800,193200,151000,132850,169000,71400,29066,157500,0,93700,0,273500,0,230805,0,0,0],
-    "Саша":[0,0,0,91860,104189,92300,0,172185,60327,29745,67600,33440,74058,64860,0,0,0,93255,0,0,59453,0,0,60188,59000,0,104596,0,74383,0],
-    "Віка":[0,0,0,0,0,0,0,0,45928,0,35754,0,0,0,0,85054,0,0,0,0,0,0,114683,286058,37612,0,0,0,0,0]
+    "Еля":[],
+    "Таня":[],
+    "Саша":[],
+    "Віка":[]
   },
-  load:{"Еля":5,"Таня":3,"Саша":4,"Віка":2},
-  leads:{"Еля":14,"Таня":11,"Саша":9,"Віка":6},
+  load:{"Еля":0,"Таня":0,"Саша":0,"Віка":0},
+  leads:{"Еля":0,"Таня":0,"Саша":0,"Віка":0},
   sources:[{n:"Instagram",v:48,hot:1},{n:"Google",v:31},{n:"Рекомендації",v:22},{n:"Постійні",v:18}],
-  updated:null, live:false
+  updated:"2026-07-01T10:00:00", live:false
 };
 
 var DATA = SAMPLE, PERIOD = "month";
@@ -359,7 +360,8 @@ function renderJuly(){
   var jt=Object.keys(DATA.julyByMgr).reduce(function(s,k){return s+DATA.julyByMgr[k];},0);
   document.getElementById('jtotn').textContent=fmtM(jt);
   document.getElementById('jtotd').textContent='ціль на липень';
-  document.getElementById('jleg').innerHTML='Нова планка <b>'+fmt(jt)+' ₴</b> на липень.<br>У червні зробили '+fmtK(sumAll())+' — ціль реальна, якщо тримати темп.';
+  var prevL=DATA.prevMonthLabel||'минулому місяці', prevT=DATA.prevMonthTotal||0;
+  document.getElementById('jleg').innerHTML='Планка <b>'+fmt(jt)+' ₴</b> на липень.<br>У '+prevL+' команда зробила '+fmtK(prevT)+' — ціль реальна, тримаємо темп!';
 }
 function sumAll(){var s=0;DATA.managers.forEach(function(m){s+=sumMgr(m.name,1,DATA.monthDays);});return s;}
 function renderSources(){
