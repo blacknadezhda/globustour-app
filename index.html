@@ -238,7 +238,7 @@ var SAMPLE = {
   julyPlan:7600000, julyByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
   prevMonthLabel:"червні", prevMonthTotal:8549901,
   managers:[
-    {name:"Еля",role:"старший менеджер",color:"#7C5CE6"},
+    {name:"Еля",role:"менеджер",color:"#7C5CE6"},
     {name:"Таня",role:"менеджер",color:"#B89CF0"},
     {name:"Саша",role:"менеджер",color:"#27C281"},
     {name:"Віка",role:"менеджер",color:"#F26B3A"}
@@ -324,12 +324,13 @@ function render(){
     var f=factBy[m.name], planM=planByMgr[m.name]||0;
     var planMper = isMonth? planM : planM*((to-from+1)/DATA.monthDays);
     var p=planMper>0? f/planMper*100:0, first=i===0;
+    var achieved=p>=100;
     var bk=DATA.bookingsByMgr?DATA.bookingsByMgr[m.name]:0;
     var checkVal=(isMonth&&bk)? Math.round(f/bk):0;
     var jm=DATA.julyByMgr[m.name]||0;
-    return '<div class="mrow'+(first?' lead-row':'')+'"><div class="rank">'+(i+1)+'</div>'+
+    return '<div class="mrow'+(first&&f>0?' lead-row':'')+'"><div class="rank">'+(i+1)+'</div>'+
       '<div class="who"><div class="av" style="background:'+m.color+'">'+m.name[0]+'</div>'+
-        '<div class="nm">'+m.name+(first?'<span class="crown">👑</span>':'')+'<small>'+m.role+'</small></div></div>'+
+        '<div class="nm">'+m.name+(achieved?'<span class="crown">👑</span>':'')+'<small>'+m.role+'</small></div></div>'+
       '<div class="fact">'+fmt(f)+' ₴<small>'+(isMonth?(bk+' заявок · план '+fmtK(planM)):('норма '+fmtK(planMper)))+'</small></div>'+
       '<div class="pctcell"><div class="pv">'+Math.round(p)+'%</div>'+
         '<div class="pbar"><i style="width:'+Math.min(p,100)+'%"></i></div></div>'+
