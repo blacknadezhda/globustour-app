@@ -240,6 +240,7 @@ var SAMPLE = {
   plan:7600000, planByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
   julyPlan:7600000, julyByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
   prevMonthLabel:"червні", prevMonthTotal:8549901,
+  rankOrder:["Еля","Таня","Саша","Віка"],
   managers:[
     {name:"Еля",role:"менеджер",color:"#7C5CE6"},
     {name:"Таня",role:"менеджер",color:"#B89CF0"},
@@ -320,9 +321,17 @@ function render(){
     '<div class="pf-mark" style="left:'+planPos.toFixed(1)+'%"></div></div>'+
     '<div class="pf-leg"><span>0</span><span>'+(fact>=planPeriod?'перевиконання +'+fmt(fact-planPeriod)+' ₴':'до цілі '+fmt(planPeriod-fact)+' ₴')+'</span><span>факт '+fmtK(fact)+'</span></div>';
 
-  var sorted=DATA.managers.slice().sort(function(a,b){
-    return (factBy[b.name]/(planByMgr[b.name]||1))-(factBy[a.name]/(planByMgr[a.name]||1));
-  });
+  var sorted;
+  if(DATA.rankOrder && DATA.rankOrder.length){
+    // Фіксований порядок рейтингу (оновлюється раз на день). Цифри всередині — живі.
+    var byName={}; DATA.managers.forEach(function(m){byName[m.name]=m;});
+    sorted=DATA.rankOrder.map(function(n){return byName[n];}).filter(Boolean);
+    DATA.managers.forEach(function(m){ if(sorted.indexOf(m)<0) sorted.push(m); });
+  } else {
+    sorted=DATA.managers.slice().sort(function(a,b){
+      return (factBy[b.name]/(planByMgr[b.name]||1))-(factBy[a.name]/(planByMgr[a.name]||1));
+    });
+  }
   document.getElementById('mrows').innerHTML=sorted.map(function(m,i){
     var f=factBy[m.name], planM=planByMgr[m.name]||0;
     var planMper = isMonth? planM : planM*((to-from+1)/DATA.monthDays);
