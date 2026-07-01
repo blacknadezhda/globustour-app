@@ -252,7 +252,7 @@ var SAMPLE = {
   },
   load:{"Еля":0,"Таня":0,"Саша":0,"Віка":0},
   leads:{"Еля":0,"Таня":0,"Саша":0,"Віка":0},
-  sources:[{n:"Instagram",v:48,hot:1},{n:"Google",v:31},{n:"Рекомендації",v:22},{n:"Постійні",v:18}],
+  sources:[{n:"Instagram",v:0,hot:1},{n:"Google",v:0},{n:"Рекомендації",v:0},{n:"Постійні",v:0}],
   updated:"2026-07-01T10:00:00", live:false
 };
 
@@ -365,7 +365,7 @@ function renderJuly(){
 }
 function sumAll(){var s=0;DATA.managers.forEach(function(m){s+=sumMgr(m.name,1,DATA.monthDays);});return s;}
 function renderSources(){
-  var src=DATA.sources||[], max=Math.max.apply(null,src.map(function(s){return s.v;})||[1]);
+  var src=DATA.sources||[], max=Math.max.apply(null,src.map(function(s){return s.v;}))||1;
   document.getElementById('sources').innerHTML=src.map(function(s){
     var h=(s.v/max*100), bg=s.hot?'#F26B3A':'#F8C4AC';
     return '<div class="bcol'+(s.hot?' hot':'')+'"><div class="bwrap"><div class="b" style="height:'+h+'%;background:'+bg+'"><span class="bv">'+s.v+'</span></div></div><div class="bl">'+s.n+'</div></div>';
