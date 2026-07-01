@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<title>Globustour — Live дашборд команди</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#23242E; --ink2:#3A3B47; --muted:#9A9BA6; --muted2:#B9BAC4;
+    --surface:#FFFFFF; --line:#EEEEF3; --soft:#F4F4F8;
+    --purple:#7C5CE6; --purple-deep:#6A4BD6; --purple-soft:#EDE7FB;
+    --coral:#F26B3A; --coral-soft:#F8A98A; --coral-bg:#FCE6DB;
+    --green:#27C281; --green-bg:#E2F6EE; --amber:#F2A33A; --amber-bg:#FBEFDC; --red:#F0604C;
+    --shadow:0 12px 34px rgba(110,84,200,.10); --shadow-sm:0 6px 18px rgba(110,84,200,.07);
+    --r:18px; --r-lg:24px; --r-xl:30px;
+  }
+  html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;
+    background:linear-gradient(135deg,#E9E0F9 0%,#F1E5F1 42%,#FBE6D8 100%);background-attachment:fixed;min-height:100vh}
+  body{overscroll-behavior-y:none}
+  .app{display:flex;min-height:100vh;padding:18px;gap:18px;
+    padding-top:calc(18px + env(safe-area-inset-top));padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+  .sidebar{width:74px;flex-shrink:0;background:#23242E;border-radius:var(--r-xl);display:flex;flex-direction:column;align-items:center;padding:22px 0;gap:8px}
+  .sidebar .brandmark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--coral));display:grid;place-items:center;color:#fff;font-weight:900;font-size:20px;margin-bottom:18px}
+  .sidebar .ico{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;color:#8A8B97;cursor:pointer;transition:.15s}
+  .sidebar .ico:hover{background:#31323E;color:#fff}
+  .sidebar .ico.active{background:linear-gradient(135deg,var(--purple),var(--purple-deep));color:#fff}
+  .sidebar .ico svg{width:21px;height:21px}
+  .sidebar .sp{flex:1}
+  .main{flex:1;min-width:0}
+  .topbar{display:flex;align-items:center;gap:16px;background:var(--surface);border-radius:var(--r-lg);padding:14px 20px;box-shadow:var(--shadow-sm);margin-bottom:18px;flex-wrap:wrap}
+  .topbar .logo{font-size:21px;font-weight:800;letter-spacing:-.5px;margin-right:6px}
+  .toggle{display:flex;gap:4px;background:var(--soft);border-radius:14px;padding:4px}
+  .toggle button{border:none;background:none;font-size:13px;font-weight:600;color:var(--muted);padding:7px 16px;border-radius:11px;cursor:pointer;font-family:inherit;transition:.15s}
+  .toggle button.on{background:var(--coral);color:#fff;box-shadow:0 5px 14px rgba(242,107,58,.35)}
+  .topbar .grow{flex:1}
+  .status{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--muted);background:var(--soft);padding:7px 12px;border-radius:11px}
+  .status .ledot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .status.stale .ledot{background:var(--amber)}
+  .status.off .ledot{background:var(--muted2)}
+  .topbar .tb-ic{width:40px;height:40px;border-radius:12px;background:var(--soft);display:grid;place-items:center;color:var(--ink2);flex-shrink:0;cursor:pointer}
+  .topbar .tb-ic svg{width:18px;height:18px}
+  .topbar .user{display:flex;align-items:center;gap:10px}
+  .topbar .user .nm{font-size:13px;font-weight:700}
+  .topbar .user .nm small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  .topbar .user .ava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#B89CF0,#F26B3A);display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
+  .sectitle{font-size:12px;color:var(--ink2);font-weight:800;letter-spacing:.2px;margin:26px 4px 14px;display:flex;align-items:center;gap:10px}
+  .sectitle .ln{flex:1;height:1px;background:rgba(124,92,230,.14)}
+  .demo{font-size:9px;background:var(--amber-bg);color:#9a6410;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:.3px}
+  .hint{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .kpi{background:var(--surface);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow-sm)}
+  .kpi.hero{background:linear-gradient(125deg,#7C5CE6 0%,#9B6BD4 45%,#F26B3A 130%);color:#fff;box-shadow:0 16px 36px rgba(124,92,230,.32)}
+  .kpi .lbl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:12px}
+  .kpi.hero .lbl{color:rgba(255,255,255,.82)}
+  .kpi .val{font-size:30px;font-weight:800;letter-spacing:-1.2px;line-height:1}
+  .kpi .val span{font-size:15px;font-weight:700;opacity:.55}
+  .kpi .meta{font-size:11.5px;font-weight:600;color:var(--muted);margin-top:11px}
+  .kpi.hero .meta{color:rgba(255,255,255,.85)}
+  .kpi .meta b{color:var(--green)} .kpi.hero .meta b{color:#fff}
+  .up{color:var(--green);font-weight:800}
+  .planfact{background:var(--surface);border-radius:var(--r-lg);padding:24px 26px;margin-top:16px;box-shadow:var(--shadow-sm)}
+  .pf-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:10px}
+  .pf-pct{font-size:46px;font-weight:800;letter-spacing:-2px;color:var(--purple);line-height:.9}
+  .pf-pct span{font-size:16px;color:var(--muted);font-weight:700;letter-spacing:0}
+  .pf-amt{text-align:right;font-size:13px;color:var(--muted);font-weight:600}
+  .pf-amt b{color:var(--ink);font-size:18px}
+  .track{height:18px;background:var(--soft);border-radius:10px;overflow:hidden;position:relative;display:flex;margin-top:16px}
+  .track .base{height:100%;background:var(--purple);border-radius:10px 0 0 10px}
+  .track .over{height:100%;background:repeating-linear-gradient(45deg,#F26B3A,#F26B3A 6px,#f7895f 6px,#f7895f 12px)}
+  .pf-mark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);opacity:.55}
+  .pf-leg{display:flex;justify-content:space-between;margin-top:12px;font-size:11.5px;color:var(--muted);font-weight:600}
+  .mtable{background:var(--surface);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+  .mhead,.mrow{display:grid;grid-template-columns:34px 1.7fr .9fr 1.1fr .9fr 1fr;gap:12px;align-items:center;padding:14px 22px}
+  .mhead{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:800;border-bottom:1px solid var(--line)}
+  .mhead .r{text-align:right}
+  .mrow{border-bottom:1px solid var(--line)} .mrow:last-child{border-bottom:none}
+  .mrow:hover{background:#FBFAFE}
+  .mrow.lead-row{background:linear-gradient(90deg,rgba(124,92,230,.06),rgba(242,107,58,.05))}
+  .mrow .rank{font-size:17px;font-weight:800;color:var(--muted2);text-align:center}
+  .mrow.lead-row .rank{color:var(--coral)}
+  .who{display:flex;align-items:center;gap:12px}
+  .av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0}
+  .who .nm{font-size:15px;font-weight:700;display:flex;flex-direction:column}
+  .who .nm small{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:1px}
+  .crown{margin-left:5px}
+  .mrow .fact{font-size:14px;font-weight:700}
+  .mrow .fact small{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
+  .pctcell{display:flex;flex-direction:column;gap:6px}
+  .pctcell .pv{font-size:15px;font-weight:800;color:var(--green)}
+  .pbar{height:6px;background:var(--soft);border-radius:4px;overflow:hidden}
+  .pbar>i{display:block;height:100%;border-radius:4px;background:var(--green)}
+  .check{text-align:right;font-size:14px;font-weight:700}
+  .check small{display:block;font-size:9.5px;color:var(--muted);font-weight:600;margin-top:1px}
+  .july{text-align:right}
+  .july .jv{font-size:14px;font-weight:800}
+  .july .jl{font-size:9.5px;color:var(--muted);font-weight:600;margin-top:2px}
+  .load{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .lcard{background:var(--surface);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-sm)}
+  .lcard .lt{display:flex;align-items:center;gap:11px;margin-bottom:15px}
+  .lcard .lt .av{width:34px;height:34px;border-radius:11px;font-size:14px}
+  .lcard .lt .ln2{font-size:14.5px;font-weight:700}
+  .lcard .wlnum{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px;display:flex;justify-content:space-between;gap:6px}
+  .wlnum .st{font-weight:800;text-align:right}
+  .dots{display:flex;gap:4px;margin-bottom:15px}
+  .dots i{flex:1;height:8px;border-radius:4px;background:var(--soft)}
+  .lcard .lead{display:flex;align-items:baseline;gap:7px;padding-top:14px;border-top:1px solid var(--line)}
+  .lcard .lead .ln3{font-size:27px;font-weight:800;letter-spacing:-1px}
+  .lcard .lead .lx{font-size:11px;color:var(--muted);font-weight:600}
+  .two{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+  .panel{background:var(--surface);border-radius:var(--r-lg);padding:22px 24px;box-shadow:var(--shadow-sm)}
+  .panel h3{font-size:15px;font-weight:800;margin-bottom:4px}
+  .panel .ph{font-size:11.5px;color:var(--muted);font-weight:500;margin-bottom:18px}
+  .jtot{display:flex;align-items:baseline;gap:10px;margin-bottom:15px}
+  .jtot .n{font-size:32px;font-weight:800;letter-spacing:-1px}
+  .jtot .d{font-size:12px;font-weight:700;color:var(--green)}
+  .jbar-leg{font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.7}
+  .jbar-leg b{color:var(--ink)}
+  .bars{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;height:150px;padding-top:6px}
+  .bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;height:100%;justify-content:flex-end}
+  .bcol .bwrap{width:100%;flex:1;display:flex;align-items:flex-end;justify-content:center}
+  .bcol .b{width:62%;border-radius:9px;min-height:10px;position:relative}
+  .bcol .bv{position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:var(--ink)}
+  .bcol .bl{font-size:10.5px;font-weight:700;color:var(--muted);text-align:center;line-height:1.2}
+  .bcol.hot .bl{color:var(--coral)}
+  .foot{font-size:11px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.7;font-weight:500}
+  .foot b{color:var(--ink2)}
+  @media(max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.load{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:760px){
+    .app{padding:12px;gap:0;flex-direction:column}.sidebar{display:none}
+    .topbar{padding:12px 14px;gap:10px}.topbar .toggle{order:3;width:100%;overflow:auto}.topbar .user .nm{display:none}
+    .mhead{display:none}
+    .mrow{grid-template-columns:26px 1fr auto;grid-template-areas:'rank who pct' 'rank fact july' 'rank check july';row-gap:6px;padding:15px 14px}
+    .mrow .rank{grid-area:rank} .who{grid-area:who} .mrow .fact{grid-area:fact}
+    .pctcell{grid-area:pct;align-items:flex-end} .check{grid-area:check;text-align:left} .july{grid-area:july}
+  }
+  @media(max-width:460px){.kpis{grid-template-columns:1fr}.load{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brandmark">G</div>
+    <div class="ico active" title="Дашборд"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 13h8V3H3zM13 21h8V11h-8zM13 3v6h8V3zM3 21h8v-6H3z"/></svg></div>
+    <div class="ico" title="Рейтинг"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg></div>
+    <div class="ico" title="Заявки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></div>
+    <div class="ico" title="Команда"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+    <div class="sp"></div>
+    <div class="ico" title="Налаштування"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.3 1a7 7 0 0 0-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.3-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.3 1 2-3.4-2-1.5a7 7 0 0 0 .1-1z"/></svg></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="logo">Globustour</div>
+      <div class="toggle" id="toggle">
+        <button data-p="day">День</button><button data-p="week">Тиждень</button><button data-p="month" class="on">Місяць</button><button data-p="year">Рік</button>
+      </div>
+      <div class="grow"></div>
+      <div class="status" id="status" title="Оновлення раз на годину: Пн–Пт 10:00–19:00, Сб–Нд 10:00–16:00"><span class="ledot"></span><span id="statustext">демо-дані</span></div>
+      <div class="tb-ic" id="refresh" title="Оновити зараз"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
+      <div class="user"><div class="nm">Команда продажів<small>Globustour</small></div><div class="ava">G</div></div>
+    </div>
+
+    <div class="sectitle">Підсумки <span class="hint" id="periodlabel">червня</span> · молодці, команда 👏<span class="ln"></span></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="planfact" id="planfact"></div>
+
+    <div class="sectitle">Рейтинг менеджерів · за <span class="hint" id="ratelabel">% плану місяця</span><span class="ln"></span></div>
+    <div class="mtable">
+      <div class="mhead"><div>#</div><div>Менеджер</div><div id="th-fact">Факт</div><div>% плану</div><div class="r">Сер. чек</div><div class="r">Ціль липня</div></div>
+      <div id="mrows"></div>
+    </div>
+
+    <div class="sectitle">Завантаження та ліди <span class="demo" id="loadsrc">демо</span><span class="ln"></span></div>
+    <div class="load" id="load"></div>
+
+    <div class="sectitle">Ціль липня та джерела лідів <span class="ln"></span></div>
+    <div class="two">
+      <div class="panel">
+        <h3>Нова ціль команди на липень</h3>
+        <div class="ph">Ростемо далі — нова планка на місяць</div>
+        <div class="jtot"><div class="n" id="jtotn"></div><div class="d" id="jtotd"></div></div>
+        <div class="track"><div class="base" style="width:80%"></div><div class="over" style="width:20%"></div></div>
+        <div class="jbar-leg" id="jleg" style="margin-top:14px"></div>
+      </div>
+      <div class="panel">
+        <h3>Джерела лідів <span class="demo">демо</span></h3>
+        <div class="ph">Оживе після підключення бота — поки орієнтовні дані</div>
+        <div class="bars" id="sources"></div>
+      </div>
+    </div>
+
+    <div class="foot" id="foot"></div>
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   TELEGRAM MINI APP — ініціалізація SDK.
+   Працює і як Mini App у Telegram, і як звичайна веб-сторінка.
+   ============================================================ */
+var TG = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+if(TG){
+  try{
+    TG.ready();
+    TG.expand();                                  // на весь екран
+    if(TG.enableClosingConfirmation) TG.enableClosingConfirmation();
+    if(TG.setHeaderColor) TG.setHeaderColor('#23242E');
+    if(TG.setBackgroundColor) TG.setBackgroundColor('#F1E5F1');
+    // Ім'я користувача з Telegram у шапці
+    var u = TG.initDataUnsafe && TG.initDataUnsafe.user;
+    if(u){
+      var nm = [u.first_name, u.last_name].filter(Boolean).join(' ') || ('@'+(u.username||''));
+      window.addEventListener('DOMContentLoaded', function(){
+        var box = document.querySelector('.topbar .user .nm');
+        if(box && nm) box.innerHTML = nm + '<small>Globustour · команда</small>';
+        var ava = document.querySelector('.topbar .user .ava');
+        if(ava && nm) ava.textContent = nm.trim()[0].toUpperCase();
+      });
+    }
+  }catch(e){}
+}
+
+/* ============================================================
+   НАЛАШТУВАННЯ — та сама адреса Apps Script Web App, що й у дашборді керівника.
+   Поки порожньо — працюють демо-дані червня.
+   ============================================================ */
+var CONFIG = {
+  API_URL: "",
+  REFRESH_MINUTES: 60,
+  HOURS: { weekday:[10,19], weekend:[10,16] }
+};
+
+var SAMPLE = {
+  month:"червень", monthDays:30, monthStart:"2026-06-01",
+  plan:6060000, planByMgr:{"Еля":2500000,"Таня":1800000,"Саша":1350000,"Віка":410000},
+  julyPlan:7600000, julyByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
+  managers:[
+    {name:"Еля",role:"старший менеджер",color:"#7C5CE6"},
+    {name:"Таня",role:"менеджер",color:"#B89CF0"},
+    {name:"Саша",role:"менеджер",color:"#27C281"},
+    {name:"Віка",role:"менеджер",color:"#F26B3A"}
+  ],
+  bookingsByMgr:{"Еля":37,"Таня":25,"Саша":18,"Віка":6},
+  daily:{
+    "Еля":[390865,0,54453,207400,221623,0,60765,45740,0,417157,618868,0,0,0,291368,135339,129682,142000,0,0,106189,99540,92044,554718,0,0,0,0,122200,284340],
+    "Таня":[0,0,0,49441,174000,82705,82705,129230,129650,141270,104500,236800,38960,57800,193200,151000,132850,169000,71400,29066,157500,0,93700,0,273500,0,230805,0,0,0],
+    "Саша":[0,0,0,91860,104189,92300,0,172185,60327,29745,67600,33440,74058,64860,0,0,0,93255,0,0,59453,0,0,60188,59000,0,104596,0,74383,0],
+    "Віка":[0,0,0,0,0,0,0,0,45928,0,35754,0,0,0,0,85054,0,0,0,0,0,0,114683,286058,37612,0,0,0,0,0]
+  },
+  load:{"Еля":5,"Таня":3,"Саша":4,"Віка":2},
+  leads:{"Еля":14,"Таня":11,"Саша":9,"Віка":6},
+  sources:[{n:"Instagram",v:48,hot:1},{n:"Google",v:31},{n:"Рекомендації",v:22},{n:"Постійні",v:18}],
+  updated:null, live:false
+};
+
+var DATA = SAMPLE, PERIOD = "month";
+var MONTHGEN={"січень":"січня","лютий":"лютого","березень":"березня","квітень":"квітня","травень":"травня","червень":"червня","липень":"липня","серпень":"серпня","вересень":"вересня","жовтень":"жовтня","листопад":"листопада","грудень":"грудня"};
+
+function fmt(n){return Math.round(n).toLocaleString('uk-UA').replace(/ /g,' ').replace(/,/g,' ');}
+function fmtM(n){return (n/1e6).toFixed(2).replace('.',',')+' млн';}
+function fmtK(n){return n>=1e6?(n/1e6).toFixed(2).replace('.',',')+'M':Math.round(n/1000)+'k';}
+
+function currentDayIndex(){
+  if(DATA.updated){var d=new Date(DATA.updated); if(!isNaN(d)) return Math.min(d.getDate(),DATA.monthDays);}
+  var last=DATA.monthDays;
+  for(var i=DATA.monthDays-1;i>=0;i--){var s=0;DATA.managers.forEach(function(m){s+=(DATA.daily[m.name]||[])[i]||0;});if(s>0){last=i+1;break;}}
+  return last;
+}
+function periodRange(){
+  var today=currentDayIndex();
+  if(PERIOD==="day")  return [today,today];
+  if(PERIOD==="week") return [Math.max(1,today-6),today];
+  return [1,DATA.monthDays];
+}
+function sumMgr(name,from,to){var a=DATA.daily[name]||[],s=0;for(var i=from;i<=to;i++)s+=a[i-1]||0;return s;}
+function periodWord(){
+  var m=MONTHGEN[DATA.month]||DATA.month;
+  if(PERIOD==="day")  return "сьогодні";
+  if(PERIOD==="week") return "за тиждень";
+  if(PERIOD==="year") return "за рік";
+  return m;
+}
+
+function render(){
+  var rng=periodRange(), from=rng[0], to=rng[1], isMonth=(PERIOD==="month"||PERIOD==="year");
+  var fact=0, factBy={};
+  DATA.managers.forEach(function(m){var v=sumMgr(m.name,from,to);factBy[m.name]=v;fact+=v;});
+  var planFull=DATA.plan, planByMgr=DATA.planByMgr;
+  var planPeriod = isMonth ? planFull : planFull*((to-from+1)/DATA.monthDays);
+  var pct = planPeriod>0 ? fact/planPeriod*100 : 0;
+  var bookings = DATA.bookingsByMgr ? Object.keys(DATA.bookingsByMgr).reduce(function(s,k){return s+DATA.bookingsByMgr[k];},0) : 0;
+  var avgCheck = (isMonth && bookings)? fact/bookings : 0;
+
+  document.getElementById('periodlabel').textContent=periodWord();
+  document.getElementById('ratelabel').textContent = isMonth? "% плану місяця":"% норми періоду";
+  document.getElementById('th-fact').textContent = isMonth? "Факт місяця":"Факт періоду";
+
+  var kpis=[
+    {hero:1,lbl:'Виручка · '+periodWord(),val:fmtK(fact),unit:' ₴',meta:(isMonth?(bookings+' заявок · сер. чек '+fmt(avgCheck)+' ₴'):('дні '+from+'–'+to))},
+    {lbl:'Виконання плану',val:Math.round(pct),unit:'%',meta:(pct>=100?'<span class="up">+'+Math.round(pct-100)+'%</span> понад норму':'до норми періоду')},
+    {lbl:(isMonth?'Понад план':'Норма періоду'),val:(isMonth?('+'+fmtK(Math.max(0,fact-planFull))):fmtK(planPeriod)),unit:' ₴',meta:(isMonth?('факт '+fmtK(fact)+' / план '+fmtK(planFull)):('факт '+fmtK(fact)))},
+    {lbl:(isMonth?'Заявок за місяць':'Заявок (міс.)'),val:bookings,unit:'',meta:(isMonth?('сер. чек '+fmt(avgCheck)+' ₴'):'за весь місяць')}
+  ];
+  document.getElementById('kpis').innerHTML=kpis.map(function(k){
+    return '<div class="kpi'+(k.hero?' hero':'')+'"><div class="lbl">'+k.lbl+'</div><div class="val">'+k.val+'<span>'+k.unit+'</span></div><div class="meta">'+k.meta+'</div></div>';
+  }).join('');
+
+  var planPos = fact>0? Math.min(planPeriod/fact*100,100):100;
+  document.getElementById('planfact').innerHTML=
+    '<div class="pf-row"><div><div class="pf-pct">'+Math.round(pct)+'<span>% '+(isMonth?'плану':'норми')+'</span></div></div>'+
+    '<div class="pf-amt">факт <b>'+fmt(fact)+' ₴</b><br>'+(isMonth?'план ':'норма ')+fmt(Math.round(planPeriod))+' ₴</div></div>'+
+    '<div class="track"><div class="base" style="width:'+planPos.toFixed(1)+'%"></div>'+
+    (fact>planPeriod?'<div class="over" style="width:'+(100-planPos).toFixed(1)+'%"></div>':'')+
+    '<div class="pf-mark" style="left:'+planPos.toFixed(1)+'%"></div></div>'+
+    '<div class="pf-leg"><span>0</span><span>'+(fact>=planPeriod?'перевиконання +'+fmt(fact-planPeriod)+' ₴':'до цілі '+fmt(planPeriod-fact)+' ₴')+'</span><span>факт '+fmtK(fact)+'</span></div>';
+
+  var sorted=DATA.managers.slice().sort(function(a,b){
+    return (factBy[b.name]/(planByMgr[b.name]||1))-(factBy[a.name]/(planByMgr[a.name]||1));
+  });
+  document.getElementById('mrows').innerHTML=sorted.map(function(m,i){
+    var f=factBy[m.name], planM=planByMgr[m.name]||0;
+    var planMper = isMonth? planM : planM*((to-from+1)/DATA.monthDays);
+    var p=planMper>0? f/planMper*100:0, first=i===0;
+    var bk=DATA.bookingsByMgr?DATA.bookingsByMgr[m.name]:0;
+    var checkVal=(isMonth&&bk)? Math.round(f/bk):0;
+    var jm=DATA.julyByMgr[m.name]||0;
+    return '<div class="mrow'+(first?' lead-row':'')+'"><div class="rank">'+(i+1)+'</div>'+
+      '<div class="who"><div class="av" style="background:'+m.color+'">'+m.name[0]+'</div>'+
+        '<div class="nm">'+m.name+(first?'<span class="crown">👑</span>':'')+'<small>'+m.role+'</small></div></div>'+
+      '<div class="fact">'+fmt(f)+' ₴<small>'+(isMonth?(bk+' заявок · план '+fmtK(planM)):('норма '+fmtK(planMper)))+'</small></div>'+
+      '<div class="pctcell"><div class="pv">'+Math.round(p)+'%</div>'+
+        '<div class="pbar"><i style="width:'+Math.min(p,100)+'%"></i></div></div>'+
+      '<div class="check">'+(checkVal?fmt(checkVal):'—')+'<small>'+(checkVal?'₴ / заявка':'тільки міс.')+'</small></div>'+
+      '<div class="july"><div class="jv">'+fmtK(jm)+' ₴</div><div class="jl">ціль</div></div></div>';
+  }).join('');
+
+  renderLoad();
+  renderJuly();
+  renderSources();
+  renderFoot();
+}
+
+function renderLoad(){
+  var WL={5:{t:"100% — лідів не бере",c:"#F0604C"},4:{t:"завантажена, 1–2 ліда",c:"#F2A33A"},3:{t:"бере лідів",c:"#27C281"},2:{t:"вільна",c:"#27C281"},1:{t:"вільна повністю",c:"#27C281"},0:{t:"немає даних",c:"#B9BAC4"}};
+  document.getElementById('load').innerHTML=DATA.managers.map(function(m){
+    var wl=DATA.load[m.name]||0, ld=DATA.leads[m.name]||0;
+    var w=WL[wl]||WL[0], dots='';
+    for(var i=1;i<=5;i++){dots+='<i style="background:'+(i<=wl?w.c:'')+'"></i>';}
+    return '<div class="lcard"><div class="lt"><div class="av" style="background:'+m.color+'">'+m.name[0]+'</div><div class="ln2">'+m.name+'</div></div>'+
+      '<div class="wlnum"><span>завантаження '+wl+'/5</span><span class="st" style="color:'+w.c+'">'+w.t+'</span></div>'+
+      '<div class="dots">'+dots+'</div>'+
+      '<div class="lead"><div class="ln3" style="color:'+m.color+'">'+ld+'</div><div class="lx">лідів сьогодні</div></div></div>';
+  }).join('');
+  document.getElementById('loadsrc').textContent = DATA.live ? 'з Telegram' : 'демо';
+}
+function renderJuly(){
+  var jt=Object.keys(DATA.julyByMgr).reduce(function(s,k){return s+DATA.julyByMgr[k];},0);
+  document.getElementById('jtotn').textContent=fmtM(jt);
+  document.getElementById('jtotd').textContent='ціль на липень';
+  document.getElementById('jleg').innerHTML='Нова планка <b>'+fmt(jt)+' ₴</b> на липень.<br>У червні зробили '+fmtK(sumAll())+' — ціль реальна, якщо тримати темп.';
+}
+function sumAll(){var s=0;DATA.managers.forEach(function(m){s+=sumMgr(m.name,1,DATA.monthDays);});return s;}
+function renderSources(){
+  var src=DATA.sources||[], max=Math.max.apply(null,src.map(function(s){return s.v;})||[1]);
+  document.getElementById('sources').innerHTML=src.map(function(s){
+    var h=(s.v/max*100), bg=s.hot?'#F26B3A':'#F8C4AC';
+    return '<div class="bcol'+(s.hot?' hot':'')+'"><div class="bwrap"><div class="b" style="height:'+h+'%;background:'+bg+'"><span class="bv">'+s.v+'</span></div></div><div class="bl">'+s.n+'</div></div>';
+  }).join('');
+}
+function renderFoot(){
+  var u=DATA.updated? new Date(DATA.updated):null;
+  var when=u&&!isNaN(u)? u.toLocaleString('uk-UA',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+  document.getElementById('foot').innerHTML=
+    '<b>Реальні дані:</b> продажі, план, %, заявки, чек · <b>З Telegram:</b> завантаження й ліди · '+
+    'Оновлення раз на годину: Пн–Пт 10:00–19:00, Сб–Нд 10:00–16:00.<br>Останнє оновлення: '+when;
+}
+
+function inHours(){
+  var d=new Date(), day=d.getDay(), h=d.getHours();
+  var w = (day>=1&&day<=5)? CONFIG.HOURS.weekday : CONFIG.HOURS.weekend;
+  return h>=w[0] && h<w[1];
+}
+function setStatus(state,text){
+  var el=document.getElementById('status'); el.className='status'+(state==='ok'?'':' '+state);
+  document.getElementById('statustext').textContent=text;
+}
+function load(){
+  if(!CONFIG.API_URL){ DATA=SAMPLE; setStatus('off','демо-дані'); render(); return; }
+  setStatus('ok','оновлення…');
+  fetch(CONFIG.API_URL,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+    DATA=normalize(j); render();
+    setStatus(inHours()?'ok':'off', (DATA.live?'live · ':'')+(inHours()?'оновлено':'поза робочим часом'));
+  }).catch(function(){ DATA=SAMPLE; render(); setStatus('stale','немає зв’язку — демо'); });
+}
+function normalize(j){
+  var d=Object.assign({},SAMPLE,j); d.live=true;
+  d.daily=j.daily||SAMPLE.daily; d.load=j.load||{}; d.leads=j.leads||{};
+  d.sources=j.sources||SAMPLE.sources; d.managers=j.managers||SAMPLE.managers;
+  return d;
+}
+
+document.getElementById('toggle').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return;
+  [].forEach.call(this.querySelectorAll('button'),function(x){x.classList.remove('on');});
+  b.classList.add('on'); PERIOD=b.dataset.p; render();
+});
+document.getElementById('refresh').addEventListener('click',load);
+
+load();
+setInterval(function(){ if(!CONFIG.API_URL) return; if(inHours()) load(); else setStatus('off','поза робочим часом'); }, CONFIG.REFRESH_MINUTES*60*1000);
+</script>
+</body>
+</html>
