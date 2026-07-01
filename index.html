@@ -160,7 +160,7 @@
         <button data-p="day">День</button><button data-p="week">Тиждень</button><button data-p="month" class="on">Місяць</button><button data-p="year">Рік</button>
       </div>
       <div class="grow"></div>
-      <div class="status" id="status" title="Оновлення раз на годину: Пн–Пт 10:00–19:00, Сб–Нд 10:00–16:00"><span class="ledot"></span><span id="statustext">демо-дані</span></div>
+      <div class="status" id="status" title="Оновлення раз на годину: Пн–Пт 10:00–19:00, Сб–Нд 10:00–16:00"><span class="ledot"></span><span id="statustext">дані з таблиці</span></div>
       <div class="tb-ic" id="refresh" title="Оновити зараз"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
       <div class="user"><div class="nm">Команда продажів<small>Globustour</small></div><div class="ava">G</div></div>
     </div>
@@ -401,7 +401,7 @@ function setStatus(state,text){
   document.getElementById('statustext').textContent=text;
 }
 function load(){
-  if(!CONFIG.API_URL){ DATA=SAMPLE; setStatus('off','демо-дані'); render(); return; }
+  if(!CONFIG.API_URL){ DATA=SAMPLE; setStatus('ok','дані з таблиці'); render(); return; }
   setStatus('ok','оновлення…');
   fetch(CONFIG.API_URL,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
     DATA=normalize(j); render();
