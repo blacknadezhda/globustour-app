@@ -165,7 +165,7 @@
       <div class="user"><div class="nm">Команда продажів<small>Globustour</small></div><div class="ava">G</div></div>
     </div>
 
-    <div class="sectitle">Підсумки <span class="hint" id="periodlabel">червня</span> · Йдемо до мети — без зупинок! 🎯<span class="ln"></span></div>
+    <div class="sectitle">Підсумки <span class="hint" id="periodlabel">червня</span> · <span id="motivation">Йдемо до мети — без зупинок! 🎯</span><span class="ln"></span></div>
     <div class="kpis" id="kpis"></div>
     <div class="planfact" id="planfact"></div>
 
@@ -287,7 +287,29 @@ function periodWord(){
   return m;
 }
 
+var MOTIVATIONS=[
+  "Йдемо до мети — без зупинок! 🎯",
+  "Ніколи не здаємось! 💪",
+  "Тільки вперед! 🚀",
+  "Разом ми — сила! 🔥",
+  "Віримо й перемагаємо! ⭐",
+  "Кожен дзвінок — крок до продажу! 📞",
+  "Сьогодні — наш день! ☀️",
+  "Мрії клієнтів — наша робота! ✈️",
+  "Маленькі кроки — великі результати! 📈",
+  "Посмішка продає! 😊",
+  "Ми — команда мрії! 💛",
+  "Роби більше, ніж учора! 🌟",
+  "Успіх любить наполегливих! 🏆",
+  "Тримаємо темп — до нових рекордів! 🚀"
+];
+function dailyMotivation(){
+  var d=new Date(), doy=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
+  return MOTIVATIONS[doy % MOTIVATIONS.length];
+}
+
 function render(){
+  var el=document.getElementById('motivation'); if(el) el.textContent=dailyMotivation();
   var rng=periodRange(), from=rng[0], to=rng[1], isMonth=(PERIOD==="month"||PERIOD==="year");
   var fact=0, factBy={};
   DATA.managers.forEach(function(m){var v=sumMgr(m.name,from,to);factBy[m.name]=v;fact+=v;});
