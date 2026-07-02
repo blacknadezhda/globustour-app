@@ -240,7 +240,7 @@ var SAMPLE = {
   plan:7600000, planByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
   julyPlan:7600000, julyByMgr:{"Еля":3300000,"Таня":2500000,"Саша":1000000,"Віка":800000},
   prevMonthLabel:"червні", prevMonthTotal:8549901,
-  prevMonthWinner:"Еля", prevMonthWinnerPct:159,
+  prevMonthWinner:"Еля",
   managers:[
     {name:"Еля",role:"менеджер",color:"#7C5CE6"},
     {name:"Таня",role:"менеджер",color:"#B89CF0"},
@@ -396,7 +396,7 @@ function renderJuly(){
   document.getElementById('jtotn').textContent=fmtM(jt);
   document.getElementById('jtotd').textContent='ціль на липень';
   var prevL=DATA.prevMonthLabel||'минулому місяці', prevT=DATA.prevMonthTotal||0;
-  var win = DATA.prevMonthWinner ? '🏆 Переможець '+prevL+' — <b>'+DATA.prevMonthWinner+'</b>'+(DATA.prevMonthWinnerPct?' ('+DATA.prevMonthWinnerPct+'% плану)':'')+'. Вітаємо! 🥳<br>' : '';
+  var win = DATA.prevMonthWinner ? '🏆 Переможець '+prevL+' (найбільше відгуків клієнтів) — <b>'+DATA.prevMonthWinner+'</b>. Вітаємо! 🥳<br>' : '';
   document.getElementById('jleg').innerHTML=win+'Планка <b>'+fmt(jt)+' ₴</b> на липень.<br>У '+prevL+' команда зробила '+fmtK(prevT)+' — ціль реальна, тримаємо темп!';
 }
 function sumAll(){var s=0;DATA.managers.forEach(function(m){s+=sumMgr(m.name,1,DATA.monthDays);});return s;}
