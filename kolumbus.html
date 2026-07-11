@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Коломбус × Глоба — Полная архитектура</title>
+<style>
+  :root{
+    --ink:#14263f; --parch:#f4f7fb; --sea:#2b5cab; --sea-d:#1c3d75;
+    --gold:#f2b21e; --gold-l:#fdf1d0;
+    --ai:#2b5cab; --ai-bg:#dde8f7;
+    --glob:#6a4a9c; --glob-bg:#ebe3f5;
+    --human:#c96a1e; --human-bg:#fbead6;
+    --mon:#e84c2b; --mon-bg:#fbdfd7;
+    --muted:#5a6b82; --ok:#2f7a4a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--parch);color:var(--ink);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5;padding-bottom:70px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  header{background:radial-gradient(circle at 86% 15%,rgba(242,178,30,.22),transparent 44%),
+    linear-gradient(158deg,#1c3d75,#2b5cab 55%,#3a6fc4);color:#f4f7fb;
+    padding:52px 0 46px;border-bottom:4px solid var(--gold);position:relative;overflow:hidden}
+  header::after{content:"";position:absolute;bottom:0;left:0;right:0;height:4px;
+    background:linear-gradient(90deg,#2b5cab 0 50%,#f2b21e 50% 100%);z-index:3}
+  .compass{position:absolute;right:-46px;top:-34px;width:290px;height:290px;opacity:.12}
+  header .wrap{position:relative;z-index:2}
+  .eyebrow{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px}
+  h1{font-size:2.5rem;font-weight:800;letter-spacing:-.02em;line-height:1.06;margin-bottom:12px}
+  h1 span{color:var(--gold)}
+  .sub{font-size:1rem;max-width:660px;color:#d6e5eb}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+  .chip{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.22);
+    padding:6px 13px;border-radius:100px;font-size:.78rem}
+  .chip b{color:var(--gold)}
+
+  section{margin-top:52px}
+  .sh{display:flex;align-items:baseline;gap:13px;margin-bottom:22px}
+  .sn{font-size:.76rem;font-weight:800;color:var(--gold);border:1.5px solid var(--gold);
+    border-radius:6px;padding:3px 9px;flex-shrink:0}
+  .sh h2{font-size:1.42rem;font-weight:800;letter-spacing:-.01em}
+  .sh p{color:var(--muted);font-size:.88rem;margin-top:2px}
+
+  .card{background:#fff;border:1.5px solid #ded4c1;border-radius:16px;padding:30px 26px;
+    box-shadow:0 3px 14px rgba(19,42,52,.05)}
+
+  .node{border-radius:12px;padding:15px 17px;text-align:center;position:relative}
+  .nt{font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;gap:7px}
+  .nr{font-size:.73rem;opacity:.82;margin-top:2px;font-weight:600}
+  .nl{list-style:none;margin-top:10px;text-align:left;font-size:.8rem}
+  .nl li{padding:2px 0 2px 15px;position:relative}
+  .nl li::before{content:"›";position:absolute;left:2px;font-weight:800}
+
+  .users{background:var(--human-bg);border:1.5px solid #d6c496;color:var(--human);max-width:440px;margin:0 auto}
+  .users .nt{color:var(--human)}
+
+  .mon{background:var(--mon-bg);border:1.5px dashed #d09a90;color:var(--mon);max-width:520px;margin:0 auto 4px}
+  .mon .nt{color:var(--mon)}
+  .mon .tagm{position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+    background:var(--mon);color:#fff;font-size:.62rem;font-weight:800;padding:3px 11px;border-radius:100px;letter-spacing:.1em;white-space:nowrap}
+
+  .cond{background:linear-gradient(152deg,#14455a,#1b6788);color:#fff;max-width:460px;margin:0 auto;
+    box-shadow:0 6px 20px rgba(19,74,95,.28)}
+  .cond .nr{color:var(--gold);opacity:1}
+  .cond .tag{position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:var(--gold);color:#12232e;font-size:.63rem;font-weight:800;padding:4px 12px;border-radius:100px;letter-spacing:.11em;white-space:nowrap}
+
+  .agents{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:6px}
+  .a-sales{background:var(--ai-bg);border:1.5px solid #a6cbd7;color:var(--ai)}
+  .a-sales .nt{color:var(--ai)}
+  .a-glob{background:var(--glob-bg);border:1.5px solid #bfb2db;color:var(--glob)}
+  .a-glob .nt{color:var(--glob)}
+  .a-fut{background:repeating-linear-gradient(135deg,#f4f1ea,#f4f1ea 8px,#eee7d8 8px,#eee7d8 16px);
+    border:1.5px dashed #bcae93;color:#897b5d}
+  .a-fut .nt{color:#897b5d}
+  .a-fut .fn{font-size:.75rem;margin-top:8px;font-style:italic}
+
+  .conn{display:flex;justify-content:center;align-items:center;height:30px}
+  .cl{font-size:.66rem;color:var(--muted);background:var(--parch);padding:2px 8px;border-radius:4px;font-weight:700}
+
+  .data-bar{margin-top:16px;background:var(--parch);border:1.5px solid #dbd1bd;border-radius:10px;
+    padding:11px 15px;text-align:center;font-size:.8rem;color:var(--muted);font-weight:600}
+  .data-bar b{color:var(--sea)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:18px;justify-content:center}
+  .lg{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--muted);font-weight:600}
+  .lg span{width:13px;height:13px;border-radius:4px;display:inline-block}
+
+  /* FLOW */
+  .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0}
+  .fstep{background:#fff;border:1.5px solid #ded4c1;padding:15px 13px;position:relative}
+  .fstep:first-child{border-radius:12px 0 0 12px}
+  .fstep:last-child{border-radius:0 12px 12px 0}
+  .fi{font-size:1.25rem;margin-bottom:5px}
+  .ft{font-weight:800;font-size:.86rem;margin-bottom:3px}
+  .fd{font-size:.75rem;color:var(--muted)}
+  .fw{display:inline-block;margin-top:7px;font-size:.62rem;font-weight:800;letter-spacing:.05em;
+    text-transform:uppercase;padding:2px 7px;border-radius:4px}
+  .w-ai{background:var(--ai-bg);color:var(--ai)}
+  .w-h{background:var(--human-bg);color:var(--human)}
+  .w-g{background:var(--glob-bg);color:var(--glob)}
+  .farr{position:absolute;right:-9px;top:50%;transform:translateY(-50%);z-index:3;width:18px;height:18px;
+    background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:#12232e;font-size:.7rem;font-weight:900}
+  @media(max-width:760px){.fstep:first-child,.fstep:last-child{border-radius:12px}.farr{display:none}.agents{grid-template-columns:1fr}}
+
+  /* API layer */
+  .api{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .ep{background:#fff;border:1.5px solid #ded4c1;border-radius:11px;padding:14px 16px}
+  .ep .m{display:inline-block;font-size:.66rem;font-weight:800;padding:2px 8px;border-radius:5px;margin-right:8px;letter-spacing:.03em}
+  .m-post{background:#f5e9d2;color:#8a5a12}
+  .m-get{background:#dde8f7;color:#1c3d75}
+  .m-hook{background:#f6e0dc;color:#9c3a2f}
+  .ep .u{font-family:'SF Mono',Menlo,monospace;font-size:.76rem;color:var(--sea-d);word-break:break-all;margin-top:7px}
+  .ep .ed{font-size:.78rem;color:var(--muted);margin-top:6px}
+  .ep .ed b{color:var(--ink)}
+  @media(max-width:680px){.api{grid-template-columns:1fr}}
+
+  /* payload */
+  .pay{background:#14263f;border-radius:12px;padding:18px 20px;margin-top:16px;overflow-x:auto}
+  .pay pre{font-family:'SF Mono',Menlo,monospace;font-size:.78rem;color:#d6e5eb;line-height:1.7}
+  .pay .k{color:#e0a458}.pay .s{color:#9bd6a0}.pay .c{color:#6b8894;font-style:italic}
+
+  /* layers */
+  .layers{display:flex;flex-direction:column;gap:9px}
+  .layer{display:grid;grid-template-columns:120px 1fr;border-radius:10px;overflow:hidden;border:1.5px solid #ded4c1;background:#fff}
+  .lt{padding:15px 13px;font-weight:800;font-size:.8rem;color:#fff;display:flex;align-items:center}
+  .lb{padding:13px 15px;font-size:.82rem}
+  .lb b{color:var(--sea)}
+  .lv1 .lt{background:#2b5cab}.lv2 .lt{background:#1c3d75}.lv3 .lt{background:#6a4a9c}
+  .lv4 .lt{background:#e84c2b}.lv5 .lt{background:#f2b21e;color:#5a3d05}.lv6 .lt{background:#3a6fc4}
+
+  /* human vs ai */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .sc{border-radius:14px;padding:20px 18px;border:1.5px solid}
+  .c-ai{background:var(--ai-bg);border-color:#a6cbd7}
+  .c-h{background:var(--human-bg);border-color:#d6c496}
+  .sc h3{font-size:1rem;margin-bottom:3px;display:flex;align-items:center;gap:7px}
+  .c-ai h3{color:var(--ai)}.c-h h3{color:var(--human)}
+  .sc .cp{font-size:.74rem;margin-bottom:12px;font-weight:600;opacity:.75}
+  .sc ul{list-style:none}
+  .sc li{padding:5px 0 5px 20px;position:relative;font-size:.84rem;border-top:1px solid rgba(0,0,0,.06)}
+  .sc li:first-child{border-top:none}
+  .c-ai li::before{content:"◆";position:absolute;left:2px;color:var(--ai);font-size:.66rem;top:8px}
+  .c-h li::before{content:"●";position:absolute;left:2px;color:var(--human);font-size:.66rem;top:8px}
+  @media(max-width:680px){.split{grid-template-columns:1fr}}
+
+  .note{margin-top:22px;background:var(--gold-l);border-left:4px solid var(--gold);
+    border-radius:0 10px 10px 0;padding:15px 19px;font-size:.86rem;color:#5c4a1e}
+  .note b{color:var(--mon)}
+
+  /* tourism specifics */
+  .tour{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tc{background:#fff;border:1.5px solid #ded4c1;border-radius:13px;padding:18px 19px;position:relative;overflow:hidden}
+  .tc::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:var(--gold)}
+  .tc .th{font-weight:800;font-size:.98rem;display:flex;align-items:center;gap:8px;margin-bottom:4px;color:var(--sea-d)}
+  .tc .tsub{font-size:.76rem;color:var(--muted);font-weight:600;margin-bottom:10px}
+  .tc .ex{background:var(--parch);border-radius:8px;padding:9px 12px;font-size:.8rem;font-style:italic;color:#4a5a2e;border:1px solid #e3dcc8}
+  .tc .ex b{font-style:normal;color:var(--sea-d)}
+  .tc ul{list-style:none;margin-top:8px}
+  .tc ul li{font-size:.8rem;padding:3px 0 3px 15px;position:relative;color:var(--ink)}
+  .tc ul li::before{content:"·";position:absolute;left:4px;font-weight:900;color:var(--gold)}
+  @media(max-width:680px){.tour{grid-template-columns:1fr}}
+  .opt{display:inline-block;background:var(--mon);color:#fff;font-size:.6rem;font-weight:800;
+    padding:2px 8px;border-radius:100px;letter-spacing:.08em;margin-left:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="compass" viewBox="0 0 200 200" fill="none" stroke="#f4f7fb" stroke-width="1.4">
+    <circle cx="100" cy="100" r="92"/><circle cx="100" cy="100" r="68"/>
+    <polygon points="100,18 112,100 100,182 88,100" fill="#f2b21e" stroke="none" opacity=".9"/>
+    <polygon points="18,100 100,88 182,100 100,112" fill="#f4f7fb" stroke="none" opacity=".5"/>
+    <circle cx="100" cy="100" r="6" fill="#f4f7fb" stroke="none"/>
+  </svg>
+  <div class="wrap">
+    <div class="eyebrow">Globus Tour · система цифрових співробітників · v2</div>
+    <h1><span>Коломбус</span> × Глоба<br>полная архитектура</h1>
+    <p class="sub">Коломбус — единственный оркестратор: ведёт продажи, командует Глобой. Глоба — операционный агент. Над ними — слой мониторинга (сторож, не начальник). Внизу — реальный API All Inclusive CRM.</p>
+    <div class="chips">
+      <div class="chip">Вход: <b>Telegram</b></div>
+      <div class="chip">Язык: <b>українська</b></div>
+      <div class="chip">Мозг: <b>Claude</b></div>
+      <div class="chip">CRM: <b>All Inclusive API</b></div>
+      <div class="chip">SLA: <b>15 хв, 24/7</b></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 01 ORCHESTRATION + MONITOR -->
+  <section>
+    <div class="sh"><div class="sn">01</div>
+      <div><h2>Оркестрация и мониторинг</h2>
+        <p>Один главный (Коломбус). Один подчинённый (Глоба). Сверху — сторож работоспособности.</p></div></div>
+    <div class="card">
+
+      <div class="node mon">
+        <div class="tagm">СТОРОЖ · НЕ НАЧАЛЬНИК</div>
+        <div class="nt">🩺 Монитор работоспособности</div>
+        <div class="nr">heartbeat каждую минуту · агент замолчал → алерт тебе/Виктории в Telegram · сам ничего не решает, потому надёжен</div>
+      </div>
+
+      <div class="conn"><span class="cl">наблюдает пульс ↓</span></div>
+
+      <div class="node users">
+        <div class="nt">👥 Ты · Виктория · менеджеры · клиенты</div>
+        <div class="nr">пишут в Telegram — в одно место</div>
+      </div>
+      <div class="conn"><svg width="2" height="26"><line x1="1" y1="0" x2="1" y2="26" stroke="#2b5cab" stroke-width="2"/></svg></div>
+
+      <div class="node cond">
+        <div class="tag">ГЛАВНЫЙ · ОРКЕСТРАТОР</div>
+        <div class="nt">🧭 КОЛОМБУС</div>
+        <div class="nr">дирижёр на Claude — сам отвечает или делегирует Глобе</div>
+      </div>
+      <div class="conn"><span class="cl">делегирует ↓ / отвечает сам ↓</span></div>
+
+      <div class="agents">
+        <div class="node a-sales">
+          <div class="nt">💬 Продажи</div><div class="nr">делает сам</div>
+          <ul class="nl"><li>квалификация лидов</li><li>JTBD + BANT</li><li>контроль менеджеров</li><li>висяки · SLA · воронка</li><li>тренажёр возражений</li></ul>
+        </div>
+        <div class="node a-glob">
+          <div class="nt">⚙️ ГЛОБА</div><div class="nr">подчинённый агент</div>
+          <ul class="nl"><li>дашборд продаж/загрузок</li><li>подтверждения клиентам</li><li>инфо об отелях</li><li>письма · поручения</li><li>сбор данных из чата</li></ul>
+        </div>
+        <div class="node a-fut">
+          <div class="nt">➕ Будущие</div><div class="nr">задел на рост</div>
+          <div class="fn">агенты под соцсети, Intercars, concierge — на того же дирижёра без переписывания</div>
+        </div>
+      </div>
+
+      <div class="data-bar">Общий слой данных: <b>All Inclusive CRM</b> · <b>Google Sheets</b> · <b>Gmail</b> · <b>командный чат</b></div>
+    </div>
+    <div class="legend">
+      <div class="lg"><span style="background:#2b5cab"></span>Коломбус</div>
+      <div class="lg"><span style="background:#6a4a9c"></span>Глоба</div>
+      <div class="lg"><span style="background:#e84c2b"></span>монитор</div>
+      <div class="lg"><span style="background:#f2b21e"></span>человек</div>
+    </div>
+  </section>
+
+  <!-- 02 LEAD FLOW -->
+  <section>
+    <div class="sh"><div class="sn">02</div>
+      <div><h2>Путь лида — от рекламы до продажи</h2>
+        <p>Коломбус ловит и квалифицирует, человек продаёт, Глоба закрывает.</p></div></div>
+    <div class="flow">
+      <div class="fstep"><div class="fi">📣</div><div class="ft">Реклама</div><div class="fd">Facebook Ads → прямая ссылка в бот</div><span class="fw w-h">таргет</span><div class="farr">›</div></div>
+      <div class="fstep"><div class="fi">🧭</div><div class="ft">Коломбус ловит</div><div class="fd">15 хв · 24/7 · українською</div><span class="fw w-ai">Коломбус</span><div class="farr">›</div></div>
+      <div class="fstep"><div class="fi">🎯</div><div class="ft">Квалификация</div><div class="fd">тип · даты · бюджет · телефон</div><span class="fw w-ai">Коломбус</span><div class="farr">›</div></div>
+      <div class="fstep"><div class="fi">📞</div><div class="ft">Менеджер продаёт</div><div class="fd">звонит · тур · цена</div><span class="fw w-h">человек</span><div class="farr">›</div></div>
+      <div class="fstep"><div class="fi">✅</div><div class="ft">Глоба закрывает</div><div class="fd">подтверждение · дашборд · учёт</div><span class="fw w-g">Глоба</span></div>
+    </div>
+    <div class="note"><b>Железное правило:</b> Коломбус квалифицирует и ведёт диалог, но <b>цены на туры называет только менеджер</b>. AI не оформляет и не продаёт — иначе ошибётся в стоимости и залезет в зону человека.</div>
+  </section>
+
+  <!-- 03 REAL API -->
+  <section>
+    <div class="sh"><div class="sn">03</div>
+      <div><h2>Реальный слой All Inclusive CRM</h2>
+        <p>Настоящие эндпоинты из документации. Base: <code>api.allinclusivecrm.com/v1</code> · Bearer Token.</p></div></div>
+    <div class="api">
+      <div class="ep"><span class="m m-post">POST</span><b>Создать лид</b>
+        <div class="u">/site/api/create</div>
+        <div class="ed">Ядро Фазы 2. Коломбус кладёт <b>name, phone, comment</b> (саммари), <b>source, userId</b> (менеджер), <b>finance[price]</b>. Ответ: <b>{id}</b>.</div></div>
+      <div class="ep"><span class="m m-get">GET</span><b>Список / фильтр лидов</b>
+        <div class="u">/leads · /leads?filter[...]</div>
+        <div class="ed">Контролёр читает статусы (<b>work_high_priority</b>…), считает висяки и конверсии.</div></div>
+      <div class="ep"><span class="m m-get">GET</span><b>Аналитика · финансы</b>
+        <div class="u">/analytics/finance/payments</div>
+        <div class="ed">Платежи по датам. Прогноз выручки, средний чек для РОП-дайджеста.</div></div>
+      <div class="ep"><span class="m m-get">GET</span><b>Users · Offices</b>
+        <div class="u">/users · /offices</div>
+        <div class="ed">userId менеджеров и officeId — чтобы Коломбус назначал лид нужной девочке в нужный офис.</div></div>
+      <div class="ep"><span class="m m-hook">WEBHOOK</span><b>Входящие события</b><span class="opt">опционально</span>
+        <div class="u">Integration → Webhooks</div>
+        <div class="ed">CRM сама уведомляет Коломбуса: лид сменил статус, новый платёж. Реальное время вместо опроса. <b>Включаем после проверки на webhook.site.</b></div></div>
+      <div class="ep"><span class="m m-get">GET</span><b>Contracts · Tourists</b>
+        <div class="u">/contracts · /tourists</div>
+        <div class="ed">Связь лид→сделка→клиент. Для полной картины воронки в контролёре.</div></div>
+    </div>
+
+    <div class="pay"><pre><span class="c"># Что Коломбус отправляет при создании лида (form-data)</span>
+<span class="k">name</span>    = <span class="s">"Оксана Петренко"</span>
+<span class="k">phone</span>   = <span class="s">"067 123 4567"</span>
+<span class="k">comment</span> = <span class="s">"Напрямок: Мальдіви | Дати: лютий ±5 | Склад: 2+дитина | Тип: Сімейний"</span>
+<span class="k">source</span>  = <span class="s">"Telegram Ads"</span>
+<span class="k">userId</span>  = <span class="s">"&lt;id Татьяны&gt;"</span>   <span class="c"># сразу назначен менеджеру</span>
+<span class="c"># ← CRM отвечает: { "id": 123 }</span></pre></div>
+  </section>
+
+  <!-- 04 TOURISM SPECIFICS -->
+  <section>
+    <div class="sh"><div class="sn">04</div>
+      <div><h2>Специфика турбизнеса — сердце продаж</h2>
+        <p>Твои 20 лет экспертизы, зашитые в Коломбуса. Не анкета — продавец мечты. Ты наполняешь, он применяет.</p></div></div>
+    <div class="tour">
+      <div class="tc">
+        <div class="th">🌍 Знание направлений</div>
+        <div class="tsub">детали по каждому, кому подходит</div>
+        <div class="ex">Расскажет про <b>Занзибар, Мальдіви, Патагонію</b> «с закрытыми глазами» — фишки, для кого, что отличает</div>
+        <ul><li>база знаний по всем вашим направлениям</li><li>под тип клиента (JTBD) — своё направление</li></ul>
+      </div>
+      <div class="tc">
+        <div class="th">📅 Сезонность</div>
+        <div class="tsub">когда что предлагать</div>
+        <div class="ex">Различает <b>квітень-Сейшели vs липень-Сейшели</b>, знает лоу/хай сезон по каждому направлению</div>
+        <ul><li>таблица «месяц × направление»</li><li>подсказка «зараз не сезон, візьміть …»</li></ul>
+      </div>
+      <div class="tc">
+        <div class="th">🌊 Продажа эмоции</div>
+        <div class="tsub">мечта, а не список услуг</div>
+        <div class="ex">«Уяви, як прокидаєшся під шум океану» — <b>а не «включений сніданок»</b></div>
+        <ul><li>банк эмоциональных формулировок</li><li>образы вместо сухих фактов о туре</li></ul>
+      </div>
+      <div class="tc">
+        <div class="th">⬆️ Апселлы</div>
+        <div class="tsub">что доложить к туру</div>
+        <div class="ex">Подсказывает менеджеру: <b>клас перельоту · екскурсії · страховка · вілла vs номер</b></div>
+        <ul><li>матрица допродаж под каждый тур</li><li>сигнал менеджеру, когда уместно</li></ul>
+      </div>
+    </div>
+    <div class="note">Специфику наполняешь <b>ты и Виктория</b> — это ваш экспертный капитал, его не возьмёшь из интернета. Коломбус структурирует и применяет в каждом диалоге. Старт — топ-5–10 направлений, дальше дополняете.</div>
+  </section>
+
+  <!-- 05 LAYERS -->
+  <section>
+    <div class="sh"><div class="sn">05</div>
+      <div><h2>Слои системы</h2><p>Снизу вверх — как устроено технически.</p></div></div>
+    <div class="layers">
+      <div class="layer lv1"><div class="lt">Вход</div><div class="lb"><b>Telegram-бот</b> (aiogram 3.x) — единственная точка входа. Реклама → прямая ссылка. Instagram Директ — менеджеры руками.</div></div>
+      <div class="layer lv2"><div class="lt">Дирижёр</div><div class="lb"><b>Коломбус</b> на Claude — сам отвечает (продажи) или делегирует Глобе (операции).</div></div>
+      <div class="layer lv3"><div class="lt">Агенты</div><div class="lb"><b>Глоба</b> (уже построен) + задел под будущих. Каждый в своей зоне.</div></div>
+      <div class="layer lv4"><div class="lt">Мониторинг</div><div class="lb"><b>Сторож работоспособности</b> — heartbeat, алерт при падении. Не агент, не начальник — врач, проверяющий пульс.</div></div>
+      <div class="layer lv5"><div class="lt">Действия</div><div class="lb">Запись лида, пинг менеджеру, дашборд, подтверждения, письма, инфо об отелях, контроль висяков/SLA.</div></div>
+      <div class="layer lv6"><div class="lt">Данные</div><div class="lb"><b>All Inclusive API</b> · <b>Google Sheets</b> · <b>Gmail</b> · <b>Supabase</b> (при росте объёма).</div></div>
+    </div>
+  </section>
+
+  <!-- 06 HUMAN VS AI -->
+  <section>
+    <div class="sh"><div class="sn">06</div>
+      <div><h2>Что делает AI, что — человек</h2><p>Границы жёсткие. AI усиливает команду, не заменяет.</p></div></div>
+    <div class="split">
+      <div class="sc c-ai"><h3>◆ Делает AI</h3><div class="cp">Коломбус + Глоба</div>
+        <ul>
+          <li>Ответ лиду за 15 хв в любое время суток</li>
+          <li>Выявление потребностей, тип клиента (JTBD)</li>
+          <li>Знание направлений, сезонности, продажа эмоцией</li>
+          <li>Подсказка апселлов менеджеру (страховка, экскурсии, апгрейд)</li>
+          <li>Сбор телефона, запись лида в CRM, назначение менеджеру</li>
+          <li>Дайджест, висяки 3+ дня, контроль SLA</li>
+          <li>Конверсии, LTV, cycle time, прогноз выручки</li>
+          <li>Тренажёр возражений, разметка «дожимать/отпускать»</li>
+          <li>Ежемесячное ретро, фокус месяца, материал к 1:1</li>
+          <li>Дашборд, подтверждения, письма, инфо об отелях</li>
+        </ul></div>
+      <div class="sc c-h"><h3>● Делает человек</h3><div class="cp">Менеджеры · Виктория · ты</div>
+        <ul>
+          <li>Звонок клиенту, подбор тура, цена</li>
+          <li>Апсейлы, оформление, оплата</li>
+          <li>Прослушка голосовых менеджеров</li>
+          <li>Живые 1:1 (Коломбус готовит материал)</li>
+          <li>Эмоциональная поддержка при выгорании</li>
+          <li>Экспертное наполнение базы направлений</li>
+          <li>Instagram Директ (пока вручную)</li>
+        </ul></div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
