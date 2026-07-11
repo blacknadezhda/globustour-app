@@ -14,7 +14,7 @@ from aiogram.enums import ChatAction, ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from . import brain, globa, sessions
+from . import brain, globa, scheduler, sessions, webhooks
 from .config import config
 from .crm import crm
 
@@ -56,6 +56,21 @@ async def cmd_reset(message: Message) -> None:
     await message.answer("Історію діалогу очищено 🧹")
 
 
+@dp.message(Command("digest"))
+async def cmd_digest(message: Message) -> None:
+    """Ручний запуск РОП-дайджесту (тільки для команди)."""
+    if not (message.from_user and _is_team(message.from_user.id)):
+        return
+    await bot.send_chat_action(message.chat.id, ChatAction.TYPING)
+    try:
+        text = await scheduler.run_digest()
+    except Exception:
+        log.exception("Помилка дайджесту")
+        text = "Не вдалося зібрати дайджест — перевірте доступ до CRM."
+    for i in range(0, len(text), 4000):
+        await message.answer(text[i : i + 4000])
+
+
 @dp.message(F.text)
 async def on_message(message: Message) -> None:
     user = message.from_user
@@ -90,7 +105,11 @@ async def main() -> None:
     sessions.load()
     brain.set_team_notifier(_notify_team)
     globa.set_sender(_send_to)
-    asyncio.get_running_loop().create_task(heartbeat_task())
+    scheduler.set_notifier(_notify_team)
+    loop = asyncio.get_running_loop()
+    loop.create_task(heartbeat_task())
+    loop.create_task(scheduler.digest_loop())
+    await webhooks.start(_notify_team)
     log.info("Коломбус виходить у море 🧭 (модель: %s)", config.claude_model)
     try:
         await dp.start_polling(bot)

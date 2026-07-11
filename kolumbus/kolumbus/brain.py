@@ -108,14 +108,8 @@ async def _run_tool(name: str, args: dict) -> str:
         return f"Помилка CRM: {e}"
 
 
-async def reply(chat_id: int, user_name: str, text: str, internal: bool) -> str:
-    """Одна репліка діалогу: історія + новий текст → фінальна відповідь Коломбуса."""
-    mode = "КОМАНДА" if internal else "ПРОДАЖІ"
-    tools = [CREATE_LEAD_TOOL] + (TEAM_TOOLS if internal else [])
-
-    messages: list[dict] = sessions.history(chat_id)
-    messages.append({"role": "user", "content": f"[режим: {mode} · співрозмовник: {user_name}]\n{text}"})
-
+async def _agent_loop(messages: list[dict], tools: list[dict]) -> str:
+    """Цикл Claude ↔ інструменти до фінальної текстової відповіді."""
     final_text = ""
     for _ in range(8):  # захист від нескінченного циклу інструментів
         response = await client.messages.create(
@@ -144,6 +138,26 @@ async def reply(chat_id: int, user_name: str, text: str, internal: bool) -> str:
             results.append({"type": "tool_result", "tool_use_id": tu.id, "content": out})
         messages.append({"role": "user", "content": results})
 
+    return final_text
+
+
+async def reply(chat_id: int, user_name: str, text: str, internal: bool) -> str:
+    """Одна репліка діалогу: історія + новий текст → фінальна відповідь Коломбуса."""
+    mode = "КОМАНДА" if internal else "ПРОДАЖІ"
+    tools = [CREATE_LEAD_TOOL] + (TEAM_TOOLS if internal else [])
+
+    messages: list[dict] = sessions.history(chat_id)
+    messages.append({"role": "user", "content": f"[режим: {mode} · співрозмовник: {user_name}]\n{text}"})
+
+    final_text = await _agent_loop(messages, tools)
     final_text = final_text or "Секунду, я тут 🙂 Розкажіть, яку подорож плануєте?"
     sessions.append(chat_id, text, final_text)
     return final_text
+
+
+async def oneshot(instruction: str) -> str:
+    """Одноразова внутрішня задача без сесії (дайджест, вебхук-подія, ретро).
+
+    Працює в командному режимі з повним набором інструментів."""
+    messages = [{"role": "user", "content": f"[режим: КОМАНДА · внутрішня задача]\n{instruction}"}]
+    return await _agent_loop(messages, [CREATE_LEAD_TOOL] + TEAM_TOOLS)

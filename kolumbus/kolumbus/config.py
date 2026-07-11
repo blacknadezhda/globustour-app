@@ -41,6 +41,12 @@ class Config:
     alert_chat_ids: list[int] = field(default_factory=lambda: _ids(os.getenv("ALERT_CHAT_IDS", "")))
     heartbeat_stale_sec: int = int(os.getenv("HEARTBEAT_STALE_SEC", "180"))
 
+    # Контролёр (расписание) и вебхуки CRM
+    timezone: str = os.getenv("TZ_NAME", "Europe/Kyiv")
+    digest_time: str = os.getenv("DIGEST_TIME", "09:00")
+    webhook_port: int = int(os.getenv("WEBHOOK_PORT", "0"))
+    webhook_secret: str = os.getenv("WEBHOOK_SECRET", "")
+
     # Память диалогов
     sessions_file: str = os.getenv("SESSIONS_FILE", "data/sessions.json")
     history_limit: int = int(os.getenv("HISTORY_LIMIT", "40"))
