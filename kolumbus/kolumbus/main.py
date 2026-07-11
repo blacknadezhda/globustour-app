@@ -56,6 +56,13 @@ async def cmd_reset(message: Message) -> None:
     await message.answer("Історію діалогу очищено 🧹")
 
 
+@dp.message(Command("id"))
+async def cmd_id(message: Message) -> None:
+    """ID користувача та чату — для заповнення TEAM_USER_IDS / TEAM_CHAT_ID / ALERT_CHAT_IDS."""
+    uid = message.from_user.id if message.from_user else "—"
+    await message.answer(f"👤 Ваш user ID: {uid}\n💬 ID цього чату: {message.chat.id}")
+
+
 @dp.message(Command("digest"))
 async def cmd_digest(message: Message) -> None:
     """Ручний запуск РОП-дайджесту (тільки для команди)."""
