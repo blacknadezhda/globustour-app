@@ -58,13 +58,24 @@ kolumbus/
 
 ## Запуск
 
+Через Docker (рекомендуется — бот и сторож стартуют парой и переживают перезагрузки):
+
+```bash
+cd kolumbus
+cp .env.example .env      # заполнить токены и ID
+docker compose up -d --build
+docker compose logs -f kolumbus
+```
+
+Или вручную:
+
 ```bash
 cd kolumbus
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env      # заполнить токены и ID
 python -m kolumbus.main   # бот
-python watchdog.py        # сторож (отдельный процесс, отдельный systemd-юнит)
+python watchdog.py        # сторож (отдельный процесс)
 ```
 
 Минимум для старта: `TELEGRAM_BOT_TOKEN` + `ANTHROPIC_API_KEY`. Без `CRM_TOKEN`
