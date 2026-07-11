@@ -1,0 +1,21 @@
+# Коломбус + сторож. Запуск: docker compose up -d --build
+# Перед стартом: cp .env.example .env и заполнить токены.
+services:
+  kolumbus:
+    build: .
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data          # heartbeat + память диалогов
+      - ./knowledge:/app/knowledge # база знаний правится без пересборки
+    # Для вебхуков CRM раскомментировать и совпасть с WEBHOOK_PORT:
+    # ports:
+    #   - "8080:8080"
+
+  watchdog:
+    build: .
+    command: python watchdog.py
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data          # читает heartbeat Коломбуса
