@@ -1,8 +1,12 @@
 # Коломбус + сторож. Запуск: docker compose up -d --build
 # Перед стартом: cp .env.example .env и заполнить токены.
+# Проект изолирован: свои имена контейнеров, чужие сервисы (Глоба) не задевает.
+name: kolumbus
+
 services:
   kolumbus:
     build: .
+    container_name: kolumbus-bot
     env_file: .env
     restart: unless-stopped
     volumes:
@@ -14,6 +18,7 @@ services:
 
   watchdog:
     build: .
+    container_name: kolumbus-watchdog
     command: python watchdog.py
     env_file: .env
     restart: unless-stopped

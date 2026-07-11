@@ -12,7 +12,7 @@ from pathlib import Path
 from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ChatAction, ParseMode
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import BotCommand, Message
 
 from . import brain, globa, scheduler, sessions, webhooks
 from .config import config
@@ -54,6 +54,13 @@ async def cmd_start(message: Message) -> None:
 async def cmd_reset(message: Message) -> None:
     sessions.reset(message.chat.id)
     await message.answer("Історію діалогу очищено 🧹")
+
+
+@dp.message(Command("id"))
+async def cmd_id(message: Message) -> None:
+    """ID користувача та чату — для заповнення TEAM_USER_IDS / TEAM_CHAT_ID / ALERT_CHAT_IDS."""
+    uid = message.from_user.id if message.from_user else "—"
+    await message.answer(f"👤 Ваш user ID: {uid}\n💬 ID цього чату: {message.chat.id}")
 
 
 @dp.message(Command("digest"))
@@ -103,6 +110,12 @@ async def heartbeat_task() -> None:
 
 async def main() -> None:
     sessions.load()
+    await bot.set_my_commands([
+        BotCommand(command="start", description="Почати розмову"),
+        BotCommand(command="reset", description="Очистити історію діалогу"),
+        BotCommand(command="id", description="Показати ID користувача та чату"),
+        BotCommand(command="digest", description="Дайджест продажів (для команди)"),
+    ])
     brain.set_team_notifier(_notify_team)
     globa.set_sender(_send_to)
     scheduler.set_notifier(_notify_team)
