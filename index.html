@@ -111,6 +111,12 @@
   .lcard .lead{display:flex;align-items:baseline;gap:7px;padding-top:14px;border-top:1px solid var(--line)}
   .lcard .lead .ln3{font-size:27px;font-weight:800;letter-spacing:-1px}
   .lcard .lead .lx{font-size:11px;color:var(--muted);font-weight:600}
+  .lcard .lead .lxwm{font-size:10.5px;color:var(--muted);font-weight:700;margin-top:3px}
+  .lcard .lead .lxwm b{color:var(--text,#222)}
+  .srctabs{display:flex;gap:6px;margin-bottom:14px}
+  .srctabs span{font-size:11px;font-weight:700;color:var(--muted);background:#F1F1F5;border-radius:999px;padding:5px 12px;cursor:pointer;user-select:none;transition:.15s}
+  .srctabs span.on{background:var(--coral,#F26B3A);color:#fff}
+  .srcempty{font-size:12px;color:var(--muted);font-weight:600;padding:40px 0;text-align:center;width:100%}
   .two{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
   .panel{background:var(--surface);border-radius:var(--r-lg);padding:22px 24px;box-shadow:var(--shadow-sm)}
   .panel h3{font-size:15px;font-weight:800;margin-bottom:4px}
@@ -189,7 +195,12 @@
       </div>
       <div class="panel">
         <h3>Джерела лідів</h3>
-        <div class="ph">Звідки приходять клієнти сьогодні (з теми «Лиды»)</div>
+        <div class="ph">Звідки приходять клієнти (з теми «Лиды»)</div>
+        <div class="srctabs" id="srctabs">
+          <span data-p="today" class="on">Сьогодні</span>
+          <span data-p="week">Тиждень</span>
+          <span data-p="month">Місяць</span>
+        </div>
         <div class="bars" id="sources"></div>
       </div>
     </div>
@@ -256,7 +267,11 @@ var SAMPLE = {
   },
   load:{"Еля":4,"Таня":5,"Саша":0,"Віка":0},
   leads:{"Еля":4,"Таня":2,"Саша":0,"Віка":0},
+  leadsWeek:{"Еля":4,"Таня":2,"Саша":0,"Віка":0},
+  leadsMonth:{"Еля":4,"Таня":2,"Саша":0,"Віка":0},
   sources:[{n:"Instagram",v:1},{n:"Рекомендація",v:1},{n:"Гугл",v:2},{n:"З вулиці",v:1},{n:"Постійний",v:1}],
+  sourcesWeek:[{n:"Instagram",v:1},{n:"Рекомендація",v:1},{n:"Гугл",v:2},{n:"З вулиці",v:1},{n:"Постійний",v:1}],
+  sourcesMonth:[{n:"Instagram",v:1},{n:"Рекомендація",v:1},{n:"Гугл",v:2},{n:"З вулиці",v:1},{n:"Постійний",v:1}],
   updated:"2026-07-20T19:00:00", live:true
 };
 
@@ -382,12 +397,14 @@ function renderLoad(){
   var WL={5:{t:"100% — лідів не бере",c:"#F0604C"},4:{t:"завантажена, 1–2 ліда",c:"#F2A33A"},3:{t:"бере лідів",c:"#27C281"},2:{t:"вільна",c:"#27C281"},1:{t:"вільна повністю",c:"#27C281"},0:{t:"немає даних",c:"#B9BAC4"}};
   document.getElementById('load').innerHTML=DATA.managers.map(function(m){
     var wl=DATA.load[m.name]||0, ld=DATA.leads[m.name]||0;
+    var ldW=(DATA.leadsWeek&&DATA.leadsWeek[m.name])||0, ldM=(DATA.leadsMonth&&DATA.leadsMonth[m.name])||0;
     var w=WL[wl]||WL[0], dots='';
     for(var i=1;i<=5;i++){dots+='<i style="background:'+(i<=wl?w.c:'')+'"></i>';}
     return '<div class="lcard"><div class="lt"><div class="av" style="background:'+m.color+'">'+m.name[0]+'</div><div class="ln2">'+m.name+'</div></div>'+
       '<div class="wlnum"><span>завантаження '+wl+'/5</span><span class="st" style="color:'+w.c+'">'+w.t+'</span></div>'+
       '<div class="dots">'+dots+'</div>'+
-      '<div class="lead"><div class="ln3" style="color:'+m.color+'">'+ld+'</div><div class="lx">лідів сьогодні</div></div></div>';
+      '<div class="lead"><div class="ln3" style="color:'+m.color+'">'+ld+'</div><div class="lx">лідів сьогодні</div>'+
+      '<div class="lxwm">тиждень <b>'+ldW+'</b> · місяць <b>'+ldM+'</b></div></div></div>';
   }).join('');
   document.getElementById('loadsrc').textContent = 'з чату';
 }
@@ -400,9 +417,15 @@ function renderJuly(){
   document.getElementById('jleg').innerHTML=win+'Планка <b>'+fmt(jt)+' ₴</b> на липень.<br>У '+prevL+' команда зробила '+fmtK(prevT)+' — ціль реальна, тримаємо темп!';
 }
 function sumAll(){var s=0;DATA.managers.forEach(function(m){s+=sumMgr(m.name,1,DATA.monthDays);});return s;}
+var SRCPERIOD='today';
 function renderSources(){
-  var src=DATA.sources||[], max=Math.max.apply(null,src.map(function(s){return s.v;}))||1;
-  document.getElementById('sources').innerHTML=src.map(function(s){
+  var src = SRCPERIOD==='week' ? (DATA.sourcesWeek||DATA.sources||[])
+          : SRCPERIOD==='month'? (DATA.sourcesMonth||DATA.sources||[])
+          : (DATA.sources||[]);
+  var host=document.getElementById('sources');
+  if(!src.length){ host.innerHTML='<div class="srcempty">Немає лідів за цей період</div>'; return; }
+  var max=Math.max.apply(null,src.map(function(s){return s.v;}))||1;
+  host.innerHTML=src.map(function(s){
     var h=(s.v/max*100), bg=s.hot?'#F26B3A':'#F8C4AC';
     return '<div class="bcol'+(s.hot?' hot':'')+'"><div class="bwrap"><div class="b" style="height:'+h+'%;background:'+bg+'"><span class="bv">'+s.v+'</span></div></div><div class="bl">'+s.n+'</div></div>';
   }).join('');
@@ -435,7 +458,9 @@ function load(){
 function normalize(j){
   var d=Object.assign({},SAMPLE,j); d.live=true;
   d.daily=j.daily||SAMPLE.daily; d.load=j.load||{}; d.leads=j.leads||{};
-  d.sources=j.sources||SAMPLE.sources; d.managers=j.managers||SAMPLE.managers;
+  d.leadsWeek=j.leadsWeek||j.leads||{}; d.leadsMonth=j.leadsMonth||j.leads||{};
+  d.sources=j.sources||SAMPLE.sources; d.sourcesWeek=j.sourcesWeek||j.sources||SAMPLE.sources; d.sourcesMonth=j.sourcesMonth||j.sources||SAMPLE.sources;
+  d.managers=j.managers||SAMPLE.managers;
   return d;
 }
 
@@ -443,6 +468,11 @@ document.getElementById('toggle').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b)return;
   [].forEach.call(this.querySelectorAll('button'),function(x){x.classList.remove('on');});
   b.classList.add('on'); PERIOD=b.dataset.p; render();
+});
+document.getElementById('srctabs').addEventListener('click',function(e){
+  var t=e.target.closest('span'); if(!t)return;
+  [].forEach.call(this.querySelectorAll('span'),function(x){x.classList.remove('on');});
+  t.classList.add('on'); SRCPERIOD=t.dataset.p; renderSources();
 });
 document.getElementById('refresh').addEventListener('click',load);
 
