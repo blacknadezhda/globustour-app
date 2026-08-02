@@ -187,7 +187,7 @@
     <div class="sectitle">Ціль липня та джерела лідів <span class="ln"></span></div>
     <div class="two">
       <div class="panel">
-        <h3>Нова ціль команди на липень</h3>
+        <h3>Нова ціль команди на серпень</h3>
         <div class="ph">Ростемо далі — нова планка на місяць</div>
         <div class="jtot"><div class="n" id="jtotn"></div><div class="d" id="jtotd"></div></div>
         <div class="track"><div class="base" style="width:80%"></div><div class="over" style="width:20%"></div></div>
@@ -249,7 +249,7 @@ var CONFIG = {
 var SAMPLE = {
   month:"серпень", monthDays:31, monthStart:"2026-08-01",
   plan:7500000, planByMgr:{"Еля":3500000,"Таня":2500000,"Саша":0,"Віка":1500000},
-  julyPlan:7600000, julyByMgr:{"Еля":3300000,"Таня":2600000,"Саша":1000000,"Віка":800000},
+  julyPlan:7500000, julyByMgr:{"Еля":3500000,"Таня":2500000,"Саша":0,"Віка":1500000},
   prevMonthLabel:"липні", prevMonthTotal:10018652,
   prevMonthWinner:"Еля",
   managers:[
@@ -272,7 +272,7 @@ var SAMPLE = {
   sources:[{n:"Постійний",v:1}],
   sourcesWeek:[{n:"Постійний",v:11},{n:"Телеграм",v:1},{n:"Знайомі",v:1},{n:"Гугл",v:2},{n:"Instagram",v:5},{n:"Рекомендація",v:3}],
   sourcesMonth:[{n:"Instagram",v:2},{n:"Постійний",v:1}],
-  updated:"2026-08-02T21:07:00", live:true
+  updated:"2026-08-02T21:11:00", live:true
 };
 
 var DATA = SAMPLE, PERIOD = "month";
@@ -411,10 +411,10 @@ function renderLoad(){
 function renderJuly(){
   var jt=Object.keys(DATA.julyByMgr).reduce(function(s,k){return s+DATA.julyByMgr[k];},0);
   document.getElementById('jtotn').textContent=fmtM(jt);
-  document.getElementById('jtotd').textContent='ціль на липень';
+  document.getElementById('jtotd').textContent='ціль на серпень';
   var prevL=DATA.prevMonthLabel||'минулому місяці', prevT=DATA.prevMonthTotal||0;
   var win = DATA.prevMonthWinner ? '🏆 Переможець '+prevL+' (найбільше відгуків клієнтів) — <b>'+DATA.prevMonthWinner+'</b>. Вітаємо! 🥳<br>' : '';
-  document.getElementById('jleg').innerHTML=win+'Планка <b>'+fmt(jt)+' ₴</b> на липень.<br>У '+prevL+' команда зробила '+fmtK(prevT)+' — ціль реальна, тримаємо темп!';
+  document.getElementById('jleg').innerHTML=win+'Планка <b>'+fmt(jt)+' ₴</b> на серпень.<br>У '+prevL+' команда зробила '+fmtK(prevT)+' — ціль реальна, тримаємо темп!';
 }
 function sumAll(){var s=0;DATA.managers.forEach(function(m){s+=sumMgr(m.name,1,DATA.monthDays);});return s;}
 var SRCPERIOD='today';
