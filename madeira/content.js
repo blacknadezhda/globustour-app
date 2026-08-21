@@ -98,6 +98,30 @@ ua: {
   nav: { about:'Про тур', program:'Програма', includes:'Що входить', reviews:'Відгуки', faq:'Питання', form:'Заявка', us:'Про нас', contacts:'Контакти' },
   navCta: 'Залишити заявку',
 
+  whyTitle: 'Чому на Мадейру варто їхати саме групою',
+  whyText: 'Острів невеликий, але розкиданий: найкрасивіше лежить на протилежних узбережжях і в горах, куди громадським транспортом не дістатися. Ми беремо на себе логістику, а ви просто дивитеся у вікно.',
+  whyCards: [
+    { ic:'mount', b:'Обидва узбережжя за один тур',
+      s:'Захід із Порту-Монішем і скляним майданчиком, схід із Піком Арейро й левадою — в одній програмі, без переїздів між готелями.' },
+    { ic:'plane', b:'Переліт, готель і трансфери — в одному пакеті',
+      s:'Груповий переліт Катовіце — Фуншал, 7 ночей в одному готелі та індивідуальні трансфери в обидва боки.' },
+    { ic:'users', b:'Керівник групи поруч увесь тур',
+      s:'Від зустрічі в аеропорту до вильоту. Група невелика й україномовна — ви не загубитеся в натовпі.' }
+  ],
+  stats: [
+    { ic:'sun',    n:'8',  a:'днів',  b:'на острові' },
+    { ic:'camera', n:'4',  a:'виїзні дні', b:'з екскурсіями' },
+    { ic:'wave',   n:'2',  a:'вільні дні', b:'для океану й пляжу' }
+  ],
+  spotsTitle: 'Що побачимо на острові',
+  spotsLead: 'Чотири місця, заради яких на Мадейру їдуть повторно. Усі — в програмі туру.',
+  spots: [
+    { ph:'west',    b:'Порту-Моніш',    m:'Західне узбережжя',  d:'День 3' },
+    { ph:'peak',    b:'Пік Арейро',     m:'Гори над хмарами',   d:'День 5' },
+    { ph:'funchal', b:'Фуншал',         m:'Столиця острова',    d:'День 2' },
+    { ph:'beach',   b:'Прайя-Формоза',  m:'Пляж і океан',       d:'День 6' }
+  ],
+  spotsMore: 'Дивитися повну програму',
   heroWord: 'МАДЕЙРА',
   inclCards: [
     { ic:'plane',  b:'Груповий переліт',  s:'Катовіце — Фуншал — Катовіце. Виліт 27 жовтня о 07:10, повернення 3 листопада о 18:05.' },
@@ -305,6 +329,30 @@ en: {
   nav: { about:'The tour', program:'Itinerary', includes:'What\'s included', reviews:'Reviews', faq:'FAQ', form:'Request', us:'About us', contacts:'Contacts' },
   navCta: 'Request a spot',
 
+  whyTitle: 'Why Madeira is worth doing as a group',
+  whyText: 'The island is small but spread out: the best of it sits on opposite coasts and up in the mountains, where public transport does not go. We take the logistics; you just look out of the window.',
+  whyCards: [
+    { ic:'mount', b:'Both coasts in one trip',
+      s:'The west with Porto Moniz and the glass viewpoint, the east with Pico do Arieiro and a levada walk — one itinerary, no hopping between hotels.' },
+    { ic:'plane', b:'Flight, hotel and transfers in one package',
+      s:'Group flight Katowice — Funchal, 7 nights in a single hotel and private transfers both ways.' },
+    { ic:'users', b:'A group leader with you throughout',
+      s:'From the airport pickup to the flight home. The group is small and Ukrainian-speaking — you will not get lost in a crowd.' }
+  ],
+  stats: [
+    { ic:'sun',    n:'8', a:'days',      b:'on the island' },
+    { ic:'camera', n:'4', a:'tour days', b:'with excursions' },
+    { ic:'wave',   n:'2', a:'free days', b:'for the ocean and the beach' }
+  ],
+  spotsTitle: 'What we will see on the island',
+  spotsLead: 'Four places people come back to Madeira for. All of them are in the itinerary.',
+  spots: [
+    { ph:'west',    b:'Porto Moniz',    m:'The west coast',        d:'Day 3' },
+    { ph:'peak',    b:'Pico do Arieiro',m:'Mountains above clouds',d:'Day 5' },
+    { ph:'funchal', b:'Funchal',        m:'The island capital',    d:'Day 2' },
+    { ph:'beach',   b:'Praia Formosa',  m:'Beach and ocean',       d:'Day 6' }
+  ],
+  spotsMore: 'See the full itinerary',
   heroWord: 'MADEIRA',
   inclCards: [
     { ic:'plane',  b:'Group flight',   s:'Katowice — Funchal — Katowice. Out on October 27 at 07:10, back on November 3 at 18:05.' },
