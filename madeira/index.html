@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Авторський тур на Мадейру · 27 жовтня — 3 листопада 2026 · Globustour</title>
+<meta name="description" id="metaDesc" content="Вісім днів на Мадейрі з невеликою українською групою: Фуншал, Порту-Моніш, Пік Арейро, левади, океан і дегустації. Виліт з Катовіце 27.10.2026.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230A6FD8'/%3E%3Cstop offset='1' stop-color='%2310BCB2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:type" content="website">
+<meta property="og:title" id="ogTitle" content="Авторський тур на Мадейру · 27 жовтня — 3 листопада 2026">
+<meta property="og:description" id="ogDesc" content="Вісім днів на Мадейрі з невеликою українською групою. Виліт з Катовіце 27.10.2026.">
+<link rel="alternate" hreflang="uk" href="./?lang=ua">
+<link rel="alternate" hreflang="en" href="./?lang=en">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ======================= Шапка ======================= -->
+<header class="hdr" id="hdr">
+  <div class="wrap hdr__in">
+    <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true"></span>GLOBUSTOUR</a>
+    <nav class="hdr__nav" aria-label="Розділи сторінки">
+      <a href="#about"    data-i18n="nav.about">Про тур</a>
+      <a href="#program"  data-i18n="nav.program">Програма</a>
+      <a href="#includes" data-i18n="nav.includes">Що входить</a>
+      <a href="#reviews"  data-i18n="nav.reviews" id="navReviews">Відгуки</a>
+      <a href="#faq"      data-i18n="nav.faq">Питання</a>
+    </nav>
+    <span class="hdr__sp"></span>
+    <div class="lang" role="group" aria-label="Мова / Language">
+      <button type="button" data-lang="ua" aria-pressed="true">УКР</button>
+      <button type="button" data-lang="en" aria-pressed="false">ENG</button>
+    </div>
+    <a class="btn btn--primary btn--sm" href="#form" data-i18n="navCta">Залишити заявку</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ======================= Перший екран ======================= -->
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <span class="eyebrow eyebrow--accent" data-i18n="heroBadge">27 жовтня — 3 листопада 2026</span>
+      <h1 data-i18n="heroTitle">Мадейра: 8 днів на острові вічної весни з невеликою українською групою</h1>
+      <p class="lead" data-i18n="heroLead">Океан у листопаді, гори над хмарами, левади в лавровому лісі й вечері всією групою.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="#form" data-i18n="heroCta">Залишити заявку на тур</a>
+        <a class="btn btn--ghost" href="#program" data-i18n="heroCta2">Подивитися програму по днях</a>
+      </div>
+      <p class="hero__note" data-i18n="heroNote">Група невелика.</p>
+    </div>
+
+    <figure class="card-art" id="heroArt">
+      <!-- Ілюстрація узбережжя. Заміниться на фото, щойно у content.js
+           впишете photos.hero -->
+      <svg viewBox="0 0 800 600" role="img" aria-label="Узбережжя Мадейри">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#F2F9FE"/><stop offset="100%" stop-color="#DDF0FA"/>
+          </linearGradient>
+          <linearGradient id="sea" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stop-color="#0A6FD8"/><stop offset="100%" stop-color="#10BCB2"/>
+          </linearGradient>
+          <linearGradient id="cliffA" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0E4C7A"/><stop offset="100%" stop-color="#0B3A5E"/>
+          </linearGradient>
+          <linearGradient id="cliffB" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#14709E"/><stop offset="100%" stop-color="#0F5B84"/>
+          </linearGradient>
+          <linearGradient id="cliffC" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2E9BA8"/><stop offset="100%" stop-color="#1D7F92"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="800" height="600" fill="url(#sky)"/>
+        <circle cx="612" cy="132" r="52" fill="#FF5B3E" opacity=".92"/>
+
+        <!-- шари хмар -->
+        <path d="M0 250 q90 -26 180 -4 q80 20 150 -2 q70 -22 140 2 q90 26 180 -6 q80 -28 150 -4 V300 H0Z" fill="#FFFFFF" opacity=".55"/>
+
+        <!-- океан -->
+        <rect y="360" width="800" height="240" fill="url(#sea)"/>
+        <path d="M0 360 q100 -14 200 0 q100 14 200 0 q100 -14 200 0 q100 14 200 0 V392 H0Z" fill="#FFFFFF" opacity=".22"/>
+        <path d="M60 470 h120 M240 508 h96 M430 462 h140 M560 530 h150 M120 552 h110"
+              stroke="#FFFFFF" stroke-opacity=".38" stroke-width="4" stroke-linecap="round"/>
+
+        <!-- скелі -->
+        <path d="M0 372 L118 214 L206 300 L286 236 L392 372 Z" fill="url(#cliffA)"/>
+        <path d="M300 372 L404 244 L470 312 L540 258 L642 372 Z" fill="url(#cliffB)"/>
+        <path d="M556 372 L664 282 L732 336 L800 292 L800 372 Z" fill="url(#cliffC)"/>
+
+        <!-- лавові басейни біля берега -->
+        <ellipse cx="126" cy="400" rx="46" ry="14" fill="#8FE3DC" opacity=".85"/>
+        <ellipse cx="196" cy="416" rx="34" ry="11" fill="#8FE3DC" opacity=".7"/>
+        <!-- маяк на мисі -->
+        <rect x="700" y="264" width="7" height="30" rx="3" fill="#FFFFFF" opacity=".92"/>
+        <circle cx="703.5" cy="260" r="5" fill="#FF5B3E"/>
+      </svg>
+      <figcaption class="card-art__tag">
+        <b data-i18n="heroTagT">Фуншал, Мадейра</b>
+        <span data-i18n="heroTagS">7 ночей у готелі · сніданки щодня</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- смуга фактів -->
+  <div class="facts">
+    <div class="wrap facts__in" id="facts"></div>
+  </div>
+</section>
+
+<!-- ======================= Про тур ======================= -->
+<section class="section" id="about">
+  <div class="wrap about__grid">
+    <div>
+      <span class="eyebrow" data-i18n="nav.about">Про тур</span>
+      <h2 style="margin-top:12px" data-i18n="aboutTitle">Мадейра за вісім днів</h2>
+      <p class="lead" style="margin-top:16px" data-i18n="aboutText1"></p>
+      <p style="color:var(--ink-2)" data-i18n="aboutText2"></p>
+    </div>
+    <ul class="about__list" id="aboutPoints"></ul>
+  </div>
+</section>
+
+<!-- ======================= Програма ======================= -->
+<section class="section section--soft" id="program">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="nav.program">Програма</span>
+      <h2 data-i18n="programTitle">Програма по днях</h2>
+      <p data-i18n="programLead"></p>
+    </div>
+    <div class="days" id="days"></div>
+  </div>
+</section>
+
+<!-- ======================= Що входить ======================= -->
+<section class="section" id="includes">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="nav.includes">Що входить</span>
+      <h2 data-i18n="inclTitle">Що входить у тур</h2>
+    </div>
+    <div class="incl">
+      <div class="incl--yes">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          <span data-i18n="inclYes">Входить у вартість</span>
+        </h3>
+        <ul id="inclYes"></ul>
+      </div>
+      <div class="incl--no">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+          <span data-i18n="inclNo">Оплачується окремо</span>
+        </h3>
+        <ul id="inclNo"></ul>
+      </div>
+    </div>
+    <p class="incl__note" data-i18n="inclNote"></p>
+  </div>
+</section>
+
+<!-- ======================= Автор туру ======================= -->
+<section class="section section--soft" id="host" hidden>
+  <div class="wrap">
+    <div class="sec-head"><h2 data-i18n="hostTitle">Хто веде тур</h2></div>
+    <div class="host">
+      <div id="hostAva" class="host__ava" aria-hidden="true"></div>
+      <div>
+        <blockquote id="hostQuote"></blockquote>
+        <cite id="hostWho"></cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= Відгуки ======================= -->
+<section class="section" id="reviews" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="nav.reviews">Відгуки</span>
+      <h2 data-i18n="reviewsTitle">Що кажуть наші туристи</h2>
+      <p data-i18n="reviewsLead"></p>
+    </div>
+    <div class="reviews" id="reviewsList"></div>
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section class="section section--soft" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i18n="nav.faq">Питання</span>
+      <h2 data-i18n="faqTitle">Часті питання</h2>
+    </div>
+    <div class="faq" id="faqList"></div>
+  </div>
+</section>
+
+<!-- ======================= Форма заявки ======================= -->
+<section class="section form-sec" id="form">
+  <div class="wrap">
+    <div>
+      <div>
+        <div class="sec-head">
+          <span class="eyebrow" data-i18n="nav.form">Заявка</span>
+          <h2 data-i18n="formTitle">Залишити заявку на тур</h2>
+          <p data-i18n="formLead"></p>
+        </div>
+
+        <form class="form-card" id="leadForm" novalidate>
+          <div class="form__state form__state--ok"  id="stOk"  role="status" aria-live="polite">
+            <b data-i18n="okTitle"></b><span data-i18n="okText"></span>
+          </div>
+          <div class="form__state form__state--err" id="stErr" role="alert">
+            <b data-i18n="errTitle"></b><span id="stErrText"></span>
+          </div>
+
+          <div id="formFields">
+            <div class="field" data-field="name">
+              <label for="fName"><span data-i18n="fName">Ім'я</span> <span class="req">*</span></label>
+              <input id="fName" name="name" type="text" autocomplete="name" required>
+              <p class="field__err" data-err="name"></p>
+            </div>
+
+            <div class="field" data-field="phone">
+              <label for="fPhone"><span data-i18n="fPhone">Телефон</span> <span class="req">*</span></label>
+              <input id="fPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required>
+              <p class="field__err" data-err="phone"></p>
+            </div>
+
+            <div class="field" data-field="from">
+              <label for="fFrom"><span data-i18n="fFrom">Звідки плануєте летіти</span></label>
+              <select id="fFrom" name="from"></select>
+            </div>
+
+            <div class="field" data-field="people">
+              <label for="fPeople"><span data-i18n="fPeople">Скільки осіб</span> <span class="muted" style="font-weight:600" data-i18n="fOptional"></span></label>
+              <input id="fPeople" name="people" type="text" autocomplete="off">
+            </div>
+
+            <div class="field" data-field="note">
+              <label for="fNote"><span data-i18n="fNote">Коментар</span> <span class="muted" style="font-weight:600" data-i18n="fOptional"></span></label>
+              <textarea id="fNote" name="note" rows="3"></textarea>
+            </div>
+
+            <label class="check" id="consentWrap" for="fConsent">
+              <input id="fConsent" name="consent" type="checkbox">
+              <span id="consentText"></span>
+            </label>
+            <p class="field__err" data-err="consent" style="margin:-8px 0 16px 34px"></p>
+
+            <label class="check" for="fMarketing">
+              <input id="fMarketing" name="marketing" type="checkbox">
+              <span data-i18n="fMarketing"></span>
+            </label>
+          </div>
+
+          <button class="btn btn--primary btn--block" type="submit" id="submitBtn" data-i18n="fSubmit">Надіслати заявку</button>
+        </form>
+      </div>
+
+      <aside class="form-side">
+        <h3 data-i18n="contactsTitle">Або напишіть напряму</h3>
+        <p data-i18n="contactsLead"></p>
+        <ul class="contact-list" id="contacts"></ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Панель заявки: з'являється на мобільному після першого екрана -->
+<div class="cta-bar" id="ctaBar">
+  <a class="btn btn--primary btn--block" href="#form" data-i18n="navCta">Залишити заявку</a>
+</div>
+
+<!-- ======================= Підвал ======================= -->
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__top">
+      <div>
+        <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true"></span>GLOBUSTOUR</a>
+        <p style="margin-top:12px;max-width:34ch" data-i18n="ftrAbout"></p>
+      </div>
+      <div>
+        <b style="display:block;color:#fff;margin-bottom:12px" data-i18n="ftrDocs">Документи</b>
+        <ul class="ftr__links">
+          <li><a href="privacy.html" data-i18n="ftrPrivacy">Політика конфіденційності</a></li>
+          <li><a href="consent.html" data-i18n="ftrConsent">Згода на обробку персональних даних</a></li>
+        </ul>
+      </div>
+      <div>
+        <b style="display:block;color:#fff;margin-bottom:12px" data-i18n="ftrContacts">Контакти</b>
+        <ul class="ftr__links" id="ftrContacts"></ul>
+      </div>
+    </div>
+    <div class="ftr__bottom">
+      <span data-i18n="ftrNote"></span>
+      <span>© <span id="year">2026</span> Globustour. <span data-i18n="ftrRights"></span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="content.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
