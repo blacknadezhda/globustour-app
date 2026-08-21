@@ -1,0 +1,173 @@
+/* Напрям C — «Океан». За референсом WANDER.ph: фото на весь екран із крупним
+   написом, ряд цифр, картки-переваги праворуч, сітка іконок «у вартість входить»
+   як на попередньому сайті Globus Tour. */
+:root{
+  --font:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --bg:#FFFFFF; --surface:#F5F9FA; --dark:#0B2B33;
+  --ink:#0B2B33; --ink2:#41626B; --muted:#7C949B; --line:#DFE9EC;
+  --accent:#0E7C86; --accent-ink:#FFFFFF; --accent-glow:rgba(14,124,134,.16);
+  --accent-soft:#E2F2F3; --sun:#F08A3C;
+  --grad:linear-gradient(118deg,#0E7C86 0%,#14A8A0 100%);
+  --r:14px; --r-btn:10px; --r-field:10px;
+  --hdr-bg:rgba(255,255,255,.9); --lang-bg:#EDF4F5;
+  --ph-bg:#DCE9EC; --ph-ink:#6F888F;
+  --ftr-bg:#0B2B33; --ftr-ink:#9DB4BA; --ftr-strong:#FFFFFF; --ftr-line:rgba(255,255,255,.14);
+  --btn-shadow:0 10px 24px rgba(14,124,134,.24);
+}
+.hdr.is-stuck{ border-bottom:1px solid var(--line) }
+.hdr__lbl{ display:none }
+.tagC{ display:inline-block; font-size:11.5px; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--accent); background:var(--accent-soft); padding:8px 14px; border-radius:8px }
+
+/* герой на весь екран */
+.heroC{ position:relative; padding:0 }
+.heroC__img{ position:relative; min-height:460px; border-radius:0 }
+.heroC__img::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(11,43,51,.34) 0%,rgba(11,43,51,.62) 100%) }
+.heroC__img.ph--empty{ background:linear-gradient(160deg,#0E7C86 0%,#14A8A0 46%,#7FD3CE 100%) }
+.heroC__img.ph--empty::after{ background:linear-gradient(180deg,rgba(11,43,51,.22) 0%,rgba(11,43,51,.42) 100%) }
+.heroC__img.ph--empty .ph__cap{ display:none }
+.heroC__hint{ position:absolute; left:0; right:0; bottom:14px; z-index:3; text-align:center;
+  font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.72) }
+.heroC__over{ position:absolute; inset:0; z-index:2; display:flex; align-items:center }
+.heroC__over .wrap{ width:100%; text-align:center }
+.heroC__word{
+  font-size:clamp(44px,12vw,132px); font-weight:800; letter-spacing:-.04em; line-height:1;
+  color:#fff; text-shadow:0 4px 30px rgba(11,43,51,.4);
+}
+.heroC__sub{ margin:14px auto 0; max-width:56ch; color:#fff; font-size:16px; line-height:1.5; text-shadow:0 2px 14px rgba(11,43,51,.5) }
+.heroC__date{ display:inline-block; margin-bottom:34px; background:rgba(255,255,255,.92); color:var(--ink);
+  border-radius:8px; padding:9px 16px; font-size:13px; font-weight:800; letter-spacing:.02em }
+.heroC__cta{ display:flex; flex-direction:column; gap:12px; margin-top:26px; align-items:center }
+.heroC__cta .btn{ width:100%; max-width:340px }
+.heroC__cta .btn--ghost{ color:#fff; border-color:rgba(255,255,255,.6); background:rgba(255,255,255,.08) }
+.heroC__cta .btn--ghost:hover{ background:rgba(255,255,255,.18); border-color:#fff }
+
+/* цифри */
+.marq{ background:var(--surface); padding:0; margin:0; overflow:visible }
+.marq__t{ animation:none; white-space:normal; display:grid; grid-template-columns:repeat(2,1fr) }
+.statC{ padding:20px 14px; text-align:center; border-right:1px solid var(--line); border-bottom:1px solid var(--line) }
+.statC:nth-child(2n){ border-right:none }
+.statC b{ display:block; font-size:19px; font-weight:800; letter-spacing:-.01em; line-height:1.2 }
+.statC span{ display:block; margin-top:3px; font-size:12px; color:var(--muted); font-weight:600 }
+
+/* чому їдуть з нами */
+.whyC{ display:grid; gap:26px }
+.whyC__cards{ display:grid; gap:12px }
+.whyC__c{ display:grid; grid-template-columns:44px 1fr; gap:14px; align-items:start;
+  background:var(--surface); border-radius:var(--r); padding:18px }
+.whyC__c i{ width:44px; height:44px; border-radius:11px; background:#fff; color:var(--accent);
+  display:grid; place-items:center; flex:none; box-shadow:0 4px 12px rgba(11,43,51,.06) }
+.whyC__c svg{ width:21px; height:21px }
+.whyC__c b{ display:block; font-size:15.5px; margin-bottom:4px }
+.whyC__c span{ font-size:14px; color:var(--ink2); line-height:1.5 }
+
+/* картки напрямків з фото */
+.spotsC{ display:grid; gap:14px; margin-top:28px }
+.spotC{ border-radius:var(--r); overflow:hidden; background:var(--surface); position:relative }
+.spotC .ph{ aspect-ratio:4/3; border-radius:0 }
+.spotC__t{ padding:14px 16px 18px }
+.spotC__t b{ display:block; font-size:15.5px } .spotC__t span{ font-size:13px; color:var(--muted) }
+
+/* програма — картки днів */
+.daysC{ display:grid; gap:12px }
+.dayC{ background:#fff; border:1px solid var(--line); border-radius:var(--r); overflow:hidden }
+.dayC__b{ width:100%; display:grid; grid-template-columns:auto 1fr 22px; gap:14px; align-items:center;
+  background:none; border:none; font:inherit; text-align:left; cursor:pointer; padding:16px; min-height:72px;
+  transition:transform .16s cubic-bezier(.2,.9,.3,1.4), background .15s }
+.dayC__b:hover{ background:var(--surface) } .dayC__b:active{ transform:scale(.99) }
+.dayC__n{ background:var(--accent-soft); color:var(--accent); font-size:11.5px; font-weight:800;
+  letter-spacing:.08em; text-transform:uppercase; padding:7px 11px; border-radius:7px; white-space:nowrap }
+.dayC.is-open .dayC__n{ background:var(--grad); color:#fff }
+.dayC__t b{ display:block; font-size:16px; font-weight:700; line-height:1.3 }
+.dayC__t span{ display:block; margin-top:2px; font-size:12.5px; color:var(--muted); font-weight:600 }
+.dayC__c{ width:22px; height:22px; color:var(--muted); transition:transform .22s }
+.dayC.is-open .dayC__c{ transform:rotate(180deg); color:var(--accent) }
+.dayC__body{ display:none; padding:0 16px 20px; border-top:1px solid var(--line); margin-top:0; padding-top:16px }
+.dayC.is-open .dayC__body{ display:block }
+.dayC__body p{ font-size:15px; color:var(--ink2); line-height:1.6 }
+.dayC__body .tm{ color:var(--ink); font-weight:800; font-variant-numeric:tabular-nums }
+
+/* у вартість входить — сітка іконок, як на попередньому сайті */
+.gridC{ display:grid; gap:22px }
+.gridC__i i{ width:38px; height:38px; border-radius:10px; background:var(--accent-soft); color:var(--accent);
+  display:grid; place-items:center; margin-bottom:12px }
+.gridC__i svg{ width:19px; height:19px }
+.gridC__i b{ display:block; font-size:16px; margin-bottom:6px }
+.gridC__i p{ font-size:14px; color:var(--ink2); line-height:1.5 }
+.extraC{ margin-top:34px; background:var(--surface); border-radius:var(--r); padding:24px 20px }
+.extraC h3{ display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:17px }
+.extraC h3 svg{ width:20px; height:20px; color:var(--muted) }
+.extraC ul{ list-style:none; display:grid; gap:11px }
+.extraC li{ display:grid; grid-template-columns:16px 1fr; gap:11px; font-size:14.5px; color:var(--ink2) }
+.extraC li i{ width:6px; height:6px; border-radius:50%; background:var(--muted); margin-top:8px }
+.noteC{ margin-top:20px; font-size:14.5px; color:var(--ink2); max-width:720px }
+.priceC{ margin-top:26px; text-align:center; background:var(--grad); color:#fff; border-radius:var(--r); padding:30px 24px }
+.priceC span{ font-size:11.5px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; opacity:.85 }
+.priceC b{ display:block; font-size:48px; font-weight:800; letter-spacing:-.03em; line-height:1; margin:8px 0 10px }
+.priceC p{ font-size:14px; opacity:.9; max-width:44ch; margin:0 auto }
+
+/* про нас */
+.usC{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px; text-align:center }
+.usC div{ background:var(--surface); border-radius:var(--r); padding:20px 14px }
+.usC b{ display:block; font-size:30px; font-weight:800; letter-spacing:-.02em; color:var(--accent); line-height:1 }
+.usC span{ font-size:12px; color:var(--muted); font-weight:700 }
+
+/* автор */
+.hostC{ display:grid; gap:20px; align-items:center }
+.hostC .ph{ width:110px; height:110px; border-radius:50%; min-height:0 }
+.hostC blockquote{ font-size:18px; line-height:1.5 }
+.hostC cite{ display:block; margin-top:12px; font-style:normal; font-size:13.5px; color:var(--muted); font-weight:800 }
+
+/* відгуки */
+.revC{ display:grid; gap:14px }
+.revC__c{ border:1px solid var(--line); border-radius:var(--r); padding:22px }
+.revC__s{ color:var(--sun); letter-spacing:.14em; margin-bottom:10px }
+.revC__c p{ font-size:15.5px; line-height:1.55 }
+.revC__f{ display:flex; align-items:center; gap:12px; margin-top:16px }
+.revC__a{ width:40px; height:40px; border-radius:50%; background:var(--accent-soft); color:var(--accent);
+  display:grid; place-items:center; font-weight:800; flex:none }
+.revC__f b{ display:block; font-size:14px } .revC__f span{ font-size:12.5px; color:var(--muted) }
+
+/* faq */
+.faqC__i{ border-bottom:1px solid var(--line) }
+.faqC__i:first-child{ border-top:1px solid var(--line) }
+.faqC__b{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
+  background:none; border:none; font:inherit; text-align:left; cursor:pointer; padding:18px 0; min-height:64px;
+  font-size:16px; font-weight:700; transition:transform .16s cubic-bezier(.2,.9,.3,1.4), color .15s }
+.faqC__b:hover{ color:var(--accent) } .faqC__b:active{ transform:scale(.995) }
+.faqC__b svg{ width:20px; height:20px; flex:none; color:var(--muted); transition:transform .22s }
+.faqC__i.is-open .faqC__b svg{ transform:rotate(45deg); color:var(--accent) }
+.faqC__a{ display:none; padding:0 0 20px; color:var(--ink2); font-size:15px; max-width:720px }
+.faqC__i.is-open .faqC__a{ display:block }
+
+/* форма */
+.formC{ background:var(--surface) }
+.formC__g{ display:grid; gap:26px }
+.formC__card{ background:#fff; border-radius:var(--r); padding:24px 20px; border:1px solid var(--line) }
+.clC{ list-style:none; display:grid; gap:10px; margin-top:18px }
+.clC a{ display:inline-flex; align-items:center; gap:10px; min-height:44px; font-weight:700; font-size:15.5px }
+.clC svg{ width:19px; height:19px; color:var(--accent); flex:none }
+.clCEmpty{ color:var(--muted); font-size:14.5px }
+
+@media (min-width:760px){
+  .heroC__img{ min-height:600px }
+  .heroC__cta{ flex-direction:row; justify-content:center }
+  .heroC__cta .btn{ width:auto; max-width:none }
+  .heroC__sub{ font-size:19px }
+  .marq__t{ grid-template-columns:repeat(4,1fr) }
+  .statC{ padding:26px 18px; border-bottom:none }
+  .statC:nth-child(2n){ border-right:1px solid var(--line) }
+  .statC:last-child{ border-right:none }
+  .statC b{ font-size:24px }
+  .whyC{ grid-template-columns:1fr 1fr; gap:48px; align-items:start }
+  .spotsC{ grid-template-columns:repeat(4,1fr); gap:20px }
+  .gridC{ grid-template-columns:repeat(3,1fr); gap:32px }
+  .extraC{ padding:30px 32px }
+  .hostC{ grid-template-columns:110px 1fr; gap:28px }
+  .revC{ grid-template-columns:1fr 1fr; gap:20px }
+  .formC__g{ grid-template-columns:1.1fr .9fr; gap:48px; align-items:start }
+  .formC__card{ padding:32px }
+  .usC b{ font-size:40px }
+  .dayC__body{ padding-left:32px; padding-right:32px }
+}
+@media (min-width:1000px){ .marq__t{ grid-template-columns:repeat(4,1fr) } }

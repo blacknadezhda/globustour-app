@@ -35,12 +35,33 @@ window.CONFIG = {
     storageMonths: 24              /* строк зберігання заявок, місяців   */
   },
 
-  /* Фото. Порожньо — показується намальована ілюстрація узбережжя.
-     Покладіть файл поруч і впишіть ім'я: 'hero.jpg' */
+  /* Ціна. Порожньо — блок вартості не показується взагалі
+     (сторінка веде тільки на заявку). Впишете рядок — блок з'явиться.
+     Приклад: '850 €' */
+  price: '',
+
+  /* Фото. Кожен слот порожній = показується акуратна заглушка
+     з підписом, яке фото сюди поставити.
+     Покладіть файли поруч з index.html і впишіть імена. */
   photos: {
-    hero: '',
-    host: ''
+    hero:    '',   /* головне фото: узбережжя або Фуншал згори */
+    host:    '',   /* фото керівника групи */
+    funchal: '',   /* Фуншал: набережна або ринок */
+    west:    '',   /* Порту-Моніш, лавові басейни, скляний майданчик */
+    peak:    '',   /* Пік Арейро над хмарами */
+    beach:   ''    /* пляж Прайя-Формоза або океан */
   }
+};
+
+/* --------------------------------------------------------------------------
+   1а. ПРО НАС — блок як на попередньому сайті.
+   Поки text порожній, блока немає.
+   -------------------------------------------------------------------------- */
+window.ABOUT_US = {
+  years: '',                                   /* '12' — років на ринку */
+  tours: '',                                   /* '60' — авторських турів */
+  people: '',                                  /* '900' — туристів */
+  text: { ua: '', en: '' }                     /* 2–4 речення про Globus Tour */
 };
 
 /* --------------------------------------------------------------------------
@@ -74,9 +95,18 @@ ua: {
   metaTitle: 'Авторський тур на Мадейру · 27 жовтня — 3 листопада 2026 · Globustour',
   metaDesc:  'Вісім днів на Мадейрі з невеликою українською групою: Фуншал, Порту-Моніш, Пік Арейро, левади, Камара-де-Лобуш, океан і дегустації. Виліт з Катовіце 27.10.2026.',
 
-  nav: { about:'Про тур', program:'Програма', includes:'Що входить', reviews:'Відгуки', faq:'Питання', form:'Заявка' },
+  nav: { about:'Про тур', program:'Програма', includes:'Що входить', reviews:'Відгуки', faq:'Питання', form:'Заявка', us:'Про нас', contacts:'Контакти' },
   navCta: 'Залишити заявку',
 
+  heroWord: 'МАДЕЙРА',
+  inclCards: [
+    { ic:'plane',  b:'Груповий переліт',  s:'Катовіце — Фуншал — Катовіце. Виліт 27 жовтня о 07:10, повернення 3 листопада о 18:05.' },
+    { ic:'bus',    b:'Трансфери',         s:'Індивідуальний трансфер аеропорт — готель у день прильоту і готель — аеропорт у день вильоту.' },
+    { ic:'bed',    b:'Проживання',        s:'7 ночей у готелі у Фуншалі. Розміщення у 2- або 3-місних номерах.' },
+    { ic:'fork',   b:'Харчування',        s:'Сніданки щодня в готелі. Обіди й вечері — за бажанням, оплачуються окремо.' },
+    { ic:'camera', b:'Екскурсії',         s:'Захід острова з Порту-Монішем, схід із Піком Арейро й левадою, Фуншал, Камара-де-Лобуш.' },
+    { ic:'users',  b:'Супровід',          s:'Керівник групи з вами протягом усього туру — від зустрічі в аеропорту до вильоту.' }
+  ],
   heroBadge: '27 жовтня — 3 листопада 2026',
   heroTitle: 'Мадейра: 8 днів на острові вічної весни з невеликою українською групою',
   heroLead:  'Океан у листопаді, гори над хмарами, левади в лавровому лісі й вечері всією групою. Ми беремо на себе переліт, готель, трансфери й маршрут — вам лишається зібрати валізу.',
@@ -107,6 +137,9 @@ ua: {
   ],
 
   programTitle: 'Програма по днях',
+  dayWord: 'День',
+  dayShow: 'Показати деталі дня',
+  dayHide: 'Згорнути',
   programLead:  'Виїзні екскурсії проходять групою з супроводом. Вечері — за бажанням усієї групи, оплачуються окремо.',
   days: [
     { d:'27.10.2026, вівторок', t:'Виліт і зустріч з островом', p:[
@@ -174,6 +207,20 @@ ua: {
   inclNote: 'Точний перелік послуг, вартість і умови бронювання менеджер надсилає у відповідь на заявку — щоб порахувати саме під ваш склад групи й тип номера.',
 
   hostTitle: 'Хто веде тур',
+  priceTitle: 'Вартість туру',
+  priceNote: 'За детальним розрахунком під ваш склад групи й тип номера — залиште заявку.',
+  usTitle: 'Про нас',
+  usYears: 'років на ринку',
+  usTours: 'авторських турів',
+  usPeople:'туристів у наших групах',
+  photoSlots: {
+    hero:'Головне фото: узбережжя Мадейри або Фуншал згори',
+    funchal:'Фуншал: набережна або міський ринок',
+    west:'Порту-Моніш: лавові басейни і скляний майданчик',
+    peak:'Пік Арейро над хмарами',
+    beach:'Пляж Прайя-Формоза'
+  },
+  photoHint: 'місце для фото',
 
   reviewsTitle: 'Що кажуть наші туристи',
   reviewsLead:  'Відгуки людей, які вже їздили з нами.',
@@ -196,11 +243,13 @@ ua: {
       a:'Менеджер зв\'яжеться з вами зручним каналом, надішле повну програму з вартістю, розповість про умови бронювання і відповість на питання. Заявка ні до чого вас не зобов\'язує.' }
   ],
 
-  formTitle: 'Залишити заявку на тур',
+  formTitle: 'Приєднатися до туру',
   formLead:  'Заповніть форму — менеджер зв\'яжеться з вами, надішле повну програму з вартістю та умовами бронювання. Заявка ні до чого не зобов\'язує.',
-  fName:  'Ім\'я',
+  fName:  'Ім\'я та прізвище',
   fNameP: 'Як до вас звертатися',
-  fPhone: 'Телефон',
+  fEmail: 'E-mail',
+  fEmailP:'пошта для програми туру',
+  fPhone: 'Номер телефону',
   fPhoneP:'+380 або +1',
   fFrom:  'Звідки плануєте летіти',
   fFromOpts: [ ['','Оберіть варіант'], ['ua','З України'], ['us','Зі США'], ['pl','Уже буду в Польщі'], ['other','Інше — напишу в коментарі'] ],
@@ -213,8 +262,9 @@ ua: {
   fConsentPrivacy:'Політики конфіденційності',
   fConsentDoc:'Згоди на обробку персональних даних',
   fMarketing:'Хочу отримувати новини про нові тури та акції (необов\'язково).',
-  fSubmit:'Надіслати заявку',
+  fSubmit:'Погнали разом',
   fSending:'Надсилаємо…',
+  errEmail:'Перевірте пошту — схоже, у ній помилка',
 
   errName:  'Напишіть, будь ласка, ім\'я',
   errPhone: 'Вкажіть телефон із кодом країни, наприклад +380671234567',
@@ -252,9 +302,18 @@ en: {
   metaTitle: 'Madeira Small-Group Tour · October 27 — November 3, 2026 · Globustour',
   metaDesc:  'Eight days on Madeira with a small Ukrainian-speaking group: Funchal, Porto Moniz, Pico do Arieiro, levada walks, Câmara de Lobos, the ocean and tastings. Group flight from Katowice on Oct 27, 2026.',
 
-  nav: { about:'The tour', program:'Itinerary', includes:'What\'s included', reviews:'Reviews', faq:'FAQ', form:'Request' },
+  nav: { about:'The tour', program:'Itinerary', includes:'What\'s included', reviews:'Reviews', faq:'FAQ', form:'Request', us:'About us', contacts:'Contacts' },
   navCta: 'Request a spot',
 
+  heroWord: 'MADEIRA',
+  inclCards: [
+    { ic:'plane',  b:'Group flight',   s:'Katowice — Funchal — Katowice. Out on October 27 at 07:10, back on November 3 at 18:05.' },
+    { ic:'bus',    b:'Transfers',      s:'Private transfer airport — hotel on arrival day and hotel — airport on departure day.' },
+    { ic:'bed',    b:'Accommodation',  s:'7 nights at a hotel in Funchal, in twin or triple rooms.' },
+    { ic:'fork',   b:'Meals',          s:'Breakfast every day at the hotel. Lunches and dinners are optional and paid separately.' },
+    { ic:'camera', b:'Excursions',     s:'The west with Porto Moniz, the east with Pico do Arieiro and a levada walk, Funchal, Câmara de Lobos.' },
+    { ic:'users',  b:'Group leader',   s:'A group leader with you throughout the tour, from the airport pickup to the flight home.' }
+  ],
   heroBadge: 'October 27 — November 3, 2026',
   heroTitle: 'Madeira: 8 days on the island of eternal spring with a small Ukrainian-speaking group',
   heroLead:  'The Atlantic in November, mountains above the clouds, levada trails through laurel forest and dinners with the whole group. We handle the flight, the hotel, the transfers and the route — you pack the suitcase.',
@@ -285,6 +344,9 @@ en: {
   ],
 
   programTitle: 'Day-by-day itinerary',
+  dayWord: 'Day',
+  dayShow: 'Show the day in detail',
+  dayHide: 'Collapse',
   programLead:  'Excursions run as a group with a guide. Dinners are optional, decided by the group, and paid separately.',
   days: [
     { d:'Tue, Oct 27, 2026', t:'Flight out and first meeting with the island', p:[
@@ -352,6 +414,20 @@ en: {
   inclNote: 'The exact list of services, the price and the booking terms are sent by a manager in reply to your request — so the numbers match your group and room type.',
 
   hostTitle: 'Who leads the tour',
+  priceTitle: 'Tour price',
+  priceNote: 'For a detailed quote based on your group and room type, send a request.',
+  usTitle: 'About us',
+  usYears: 'years in the business',
+  usTours: 'author-led tours',
+  usPeople:'travellers in our groups',
+  photoSlots: {
+    hero:'Main photo: the coast of Madeira or Funchal from above',
+    funchal:'Funchal: the promenade or the city market',
+    west:'Porto Moniz: lava pools and the glass viewpoint',
+    peak:'Pico do Arieiro above the clouds',
+    beach:'Praia Formosa beach'
+  },
+  photoHint: 'photo goes here',
 
   reviewsTitle: 'What our travellers say',
   reviewsLead:  'Reviews from people who have already travelled with us.',
@@ -374,11 +450,13 @@ en: {
       a:'A manager will contact you through your preferred channel, send the full itinerary with the price, explain the booking terms and answer your questions. Sending the request does not commit you to anything.' }
   ],
 
-  formTitle: 'Request a spot on the tour',
+  formTitle: 'Join the tour',
   formLead:  'Fill in the form and a manager will get in touch, send the full itinerary with the price and the booking terms. Sending the request commits you to nothing.',
-  fName:  'Name',
+  fName:  'Full name',
   fNameP: 'What should we call you',
-  fPhone: 'Phone',
+  fEmail: 'Email',
+  fEmailP:'where to send the itinerary',
+  fPhone: 'Phone number',
   fPhoneP:'+380 or +1',
   fFrom:  'Where will you fly from',
   fFromOpts: [ ['','Choose an option'], ['ua','From Ukraine'], ['us','From the US'], ['pl','I will already be in Poland'], ['other','Other — I will explain in the comment'] ],
@@ -391,8 +469,9 @@ en: {
   fConsentPrivacy:'Privacy Policy',
   fConsentDoc:'Consent to Personal Data Processing',
   fMarketing:'I would like to receive news about new tours and offers (optional).',
-  fSubmit:'Send the request',
+  fSubmit:'Count me in',
   fSending:'Sending…',
+  errEmail:'Please check the email address',
 
   errName:  'Please tell us your name',
   errPhone: 'Enter a phone number with the country code, for example +380671234567',
