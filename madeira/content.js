@@ -8,6 +8,12 @@
    -------------------------------------------------------------------------- */
 window.CONFIG = {
 
+  /* Адреса, за якою сайт відкриється у людей. Потрібна для коректних
+     посилань у пошуку й для картинки-прев'ю в месенджерах.
+     Приклад: 'https://globustourniko.com.ua' або
+     'https://blacknadezhda.github.io/globustour-app/madeira' */
+  siteUrl: '',
+
   /* Куди йде заявка. Поки порожньо — форма НЕ працює і чесно про це скаже.
      Як за 10 хвилин отримати цю адресу — див. README.md, крок 1.
      Приклад: 'https://madeira-form.ваш-акаунт.workers.dev' */
@@ -40,8 +46,12 @@ window.CONFIG = {
      Приклад: '850 €' */
   price: '',
 
-  /* Фото. Кожен слот порожній = показується акуратна заглушка
-     з підписом, яке фото сюди поставити.
+  /* Показувати підказки «місце для фото» на порожніх слотах.
+     Поставте false — і сайт можна публікувати ще до появи фотографій:
+     замість підказок лишаться чисті градієнти. */
+  showPhotoHints: true,
+
+  /* Фото. Порожній слот = градієнт замість знімка.
      Покладіть файли поруч з index.html і впишіть імена. */
   photos: {
     hero:    '',   /* головне фото: узбережжя або Фуншал згори */
@@ -95,7 +105,7 @@ ua: {
   metaTitle: 'Авторський тур на Мадейру · 27 жовтня — 3 листопада 2026 · Globustour',
   metaDesc:  'Вісім днів на Мадейрі з невеликою українською групою: Фуншал, Порту-Моніш, Пік Арейро, левади, Камара-де-Лобуш, океан і дегустації. Виліт з Катовіце 27.10.2026.',
 
-  nav: { about:'Про тур', program:'Програма', includes:'Що входить', reviews:'Відгуки', faq:'Питання', form:'Заявка', us:'Про нас', contacts:'Контакти' },
+  nav: { about:'Про тур', program:'Програма', includes:'Що входить', reviews:'Відгуки', faq:'Питання', form:'Заявка', us:'Про нас', spots:'Острів', contacts:'Контакти' },
   navCta: 'Залишити заявку',
 
   whyTitle: 'Чому на Мадейру варто їхати саме групою',
@@ -326,7 +336,7 @@ en: {
   metaTitle: 'Madeira Small-Group Tour · October 27 — November 3, 2026 · Globustour',
   metaDesc:  'Eight days on Madeira with a small Ukrainian-speaking group: Funchal, Porto Moniz, Pico do Arieiro, levada walks, Câmara de Lobos, the ocean and tastings. Group flight from Katowice on Oct 27, 2026.',
 
-  nav: { about:'The tour', program:'Itinerary', includes:'What\'s included', reviews:'Reviews', faq:'FAQ', form:'Request', us:'About us', contacts:'Contacts' },
+  nav: { about:'The tour', program:'Itinerary', includes:'What\'s included', reviews:'Reviews', faq:'FAQ', form:'Request', us:'About us', spots:'The island', contacts:'Contacts' },
   navCta: 'Request a spot',
 
   whyTitle: 'Why Madeira is worth doing as a group',

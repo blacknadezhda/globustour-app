@@ -64,7 +64,7 @@
         '<li>Вимагати видалення даних і відкликати згоду в будь-який момент.</li>' +
         '<li>Заперечувати проти обробки та звернутися зі скаргою до Уповноваженого Верховної Ради України з прав людини.</li></ul>' +
         '<p>Щоб скористатися будь-яким із прав, напишіть на ' + esc(E) + '. Ми відповідаємо протягом 30 днів.</p>' +
-        '<h2>8. Cookie та аналітика</h2><p>Сайт не використовує рекламні чи аналітичні cookie і не встановлює лічильників. У браузері зберігається лише обрана вами мова сторінки — це технічна необхідність, і згоди вона не потребує. Якщо ми додамо аналітику, ми оновимо цю політику і покажемо банер згоди.</p>' +
+        '<h2>8. Cookie та аналітика</h2><p>Сайт не використовує рекламні чи аналітичні cookie і не встановлює лічильників. Шрифти та всі файли оформлення завантажуються з нашого сервера, тому при відкритті сторінки ваші дані не передаються стороннім сервісам. У браузері зберігається лише обрана вами мова сторінки — це технічна необхідність, і згоди вона не потребує. Якщо ми додамо аналітику, ми оновимо цю політику і покажемо банер згоди.</p>' +
         '<h2>9. Зміни політики</h2><p>Актуальна редакція завжди опублікована на цій сторінці. Дата оновлення вказана вище.</p>' },
       en: { title:'Privacy Policy', body:
         '<h2>1. Who processes your data</h2>' +
@@ -88,7 +88,7 @@
         '<li>To have your data deleted and to withdraw consent at any time.</li>' +
         '<li>To object to processing and to lodge a complaint with the Ukrainian Parliament Commissioner for Human Rights.</li></ul>' +
         '<p>To exercise any of these rights, write to ' + esc(E) + '. We respond within 30 days.</p>' +
-        '<h2>8. Cookies and analytics</h2><p>This site uses no advertising or analytics cookies and runs no trackers. Your browser stores only the page language you selected — a technical necessity that does not require consent. If we add analytics, we will update this policy and show a consent banner.</p>' +
+        '<h2>8. Cookies and analytics</h2><p>This site uses no advertising or analytics cookies and runs no trackers. Fonts and all styling files are served from our own server, so opening the page sends no data to third parties. Your browser stores only the page language you selected — a technical necessity that does not require consent. If we add analytics, we will update this policy and show a consent banner.</p>' +
         '<h2>9. Changes to this policy</h2><p>The current version is always published on this page. The update date is shown above.</p>' }
     },
     consent: {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Замініть https://ВАШ-ДОМЕН на реальну адресу сайту (той самий рядок,
+     що ви впишете в content.js → siteUrl) і завантажте файл разом із сайтом. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://ВАШ-ДОМЕН/</loc>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://ВАШ-ДОМЕН/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ВАШ-ДОМЕН/?lang=en"/>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://ВАШ-ДОМЕН/privacy.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://ВАШ-ДОМЕН/consent.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <priority>0.2</priority>
+  </url>
+</urlset>

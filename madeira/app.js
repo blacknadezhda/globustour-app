@@ -76,9 +76,10 @@
       box.appendChild(img);
     } else {
       box.classList.add('ph--empty');
-      box.innerHTML = '<div class="ph__cap">' + ic('image') +
-        '<span class="ph__hint">' + esc(T.photoHint) + '</span>' +
-        '<span class="ph__txt">' + esc((T.photoSlots || {})[slot] || '') + '</span></div>';
+      var cap = (T.photoSlots || {})[slot];
+      if (cap && CFG.showPhotoHints !== false) {
+        box.innerHTML = '<div class="ph__cap">' + ic('image') + '<span class="ph__txt">' + esc(cap) + '</span></div>';
+      }
     }
     return box;
   }
@@ -116,9 +117,6 @@
       '</div></div>';
     hero.appendChild(over);
 
-    if (img.classList.contains('ph--empty')) {
-      hero.appendChild(el('div', 'hero__note', T.photoHint + ' · ' + T.photoSlots.hero));
-    }
   }
 
   function renderWhy() {
@@ -417,8 +415,49 @@
     }).join('');
   }
 
+  /* Мікророзмітка для пошуку: тільки факти, що є на сторінці */
+  function renderSchema() {
+    var node = $('#ldjson');
+    if (!node) return;
+    var base = (CFG.siteUrl || '').replace(/\/$/, '');
+    var data = {
+      '@context': 'https://schema.org',
+      '@type': 'TouristTrip',
+      name: T.metaTitle.split(' · ')[0],
+      description: T.metaDesc,
+      startDate: '2026-10-27',
+      endDate: '2026-11-03',
+      inLanguage: T.htmlLang,
+      touristType: lang === 'ua' ? 'Невелика група' : 'Small group',
+      itinerary: {
+        '@type': 'ItemList',
+        numberOfItems: T.days.length,
+        itemListElement: T.days.map(function (d, i) {
+          return { '@type': 'ListItem', position: i + 1, name: d.t };
+        })
+      },
+      subjectOf: T.spots.map(function (s) { return { '@type': 'Place', name: s.b }; }),
+      provider: { '@type': 'TravelAgency', name: 'Globustour' }
+    };
+    var ogFile = lang === 'en' ? '/og-en.png' : '/og.png';
+    var oiLocal = $('#ogImage');
+    if (oiLocal) oiLocal.content = ogFile.slice(1);
+    if (base) {
+      data.url = base + '/?lang=' + lang;
+      data.image = base + ogFile;
+      data.provider.url = base;
+      var can = $('#canonical'); if (can) can.href = base + '/';
+      if (oiLocal) oiLocal.content = base + ogFile;
+      $$('link[hreflang]').forEach(function (l) {
+        l.href = base + '/?lang=' + l.getAttribute('hreflang').replace('uk', 'ua');
+      });
+    }
+    node.textContent = JSON.stringify(data);
+  }
+
   function render() {
     renderChrome();
+    renderSchema();
     renderHero();
     renderWhy();
     renderSpots();

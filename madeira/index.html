@@ -10,21 +10,28 @@
 <meta property="og:type" content="website">
 <meta property="og:title" id="ogTitle" content="Авторський тур на Мадейру · 27 жовтня — 3 листопада 2026">
 <meta property="og:description" id="ogDesc" content="Вісім днів на Мадейрі з невеликою українською групою.">
+<meta property="og:image" id="ogImage" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" id="canonical" href="./">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="alternate" hreflang="uk" href="./?lang=ua">
 <link rel="alternate" hreflang="en" href="./?lang=en">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preload" as="font" type="font/woff2" href="fonts/montserrat-800-cyrillic.woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<a class="skip" href="#top">Перейти до вмісту</a>
 
 <header class="hdr" id="hdr">
   <div class="wrap hdr__in">
     <a class="logo" href="#top"><span class="logo__m" aria-hidden="true">G</span>GLOBUSTOUR</a>
     <nav class="nav" aria-label="Розділи сторінки">
       <a href="#why"      data-nav="about"></a>
-      <a href="#spots"    data-nav="us"></a>
+      <a href="#spots"    data-nav="spots"></a>
       <a href="#program"  data-nav="program"></a>
       <a href="#includes" data-nav="includes"></a>
       <a href="#reviews"  data-nav="reviews" id="navReviews"></a>
@@ -83,6 +90,7 @@
   </div>
 </footer>
 
+<script type="application/ld+json" id="ldjson">{}</script>
 <script src="content.js"></script>
 <script src="app.js"></script>
 </body>
